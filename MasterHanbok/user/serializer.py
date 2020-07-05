@@ -40,7 +40,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.ModelSerializer):
     token = serializers.CharField(allow_blank=False, read_only=True)
-    new_id = serializers.CharField(allow_blank=False)
+    new_id = serializers.CharField(required=True)
     nick_name = serializers.CharField(required=False, allow_blank=True)
     phone_num = serializers.CharField(required=None, label=None)
     # token 생성해주는거 만들어버리기 (뷰에다가) 아 개졸려
@@ -69,13 +69,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
         user = SignUpModel.objects.filter(
             Q(phone_num=phone_num) |
-            Q(nick_name=nick_name)
+            Q(nick_name=nick_name) |
+            Q(new_id=new_id)
         ).distinct()
 
         if user.exists() and user.count() == 1:
             user_obj = user.first()
         else:
-            raise ValidationError("A nickname/phone number is not valid")
+            raise ValidationError("A new_id/phone number is not valid")
 
         if user_obj:
             if not user_obj.check_password(password):

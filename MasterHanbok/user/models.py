@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
         user = self.model(
             new_id=new_id,
             phone_num=phone_num,
-            nick_name=nick_name,
+            nick_name=nick_name
         )
 
         user.set_password(password)
@@ -37,9 +37,9 @@ class UserManager(BaseUserManager):
 
 class SignUpModel(AbstractBaseUser, PermissionsMixin):
     new_id = models.CharField(
-        max_length=50, default=None, unique=True, blank=None)
+        max_length=50, default='', unique=True, verbose_name=('new_id'))
     nick_name = models.CharField(
-        max_length=4, default='', null=True, unique=False)
+        max_length=4, default='', null=True)
     phone_num = models.CharField(max_length=15, default=None, null=False)
     objects = UserManager()
     """
