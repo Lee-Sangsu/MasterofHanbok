@@ -7,18 +7,18 @@ from phonenumber_field.modelfields import PhoneNumberField
 import jwt
 
 
-class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
+        new_id = validated_data['new_id']
         nick_name = validated_data['nick_name']
-        phone_num = validated_data['phone_num']
         password = validated_data['password']
+        phone_num = validated_data['phone_num']
 
         user_obj = SignUpModel(
+            new_id=new_id,
             nick_name=nick_name,
-            phone_num=phone_num
+            phone_num=phone_num,
         )
-
-# token 생성해주는거 만들어버리기 (뷰에다가) 아 개졸려
 
         user_obj.set_password(password)
         user_obj.save()
@@ -28,23 +28,28 @@ class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SignUpModel
         fields = [
+            'new_id',
             'nick_name',
             'password',
             'phone_num',
         ]
+        extra_kwargs = {'password': {'write_only': True}}
 
         # model 수정하세요 - 넵
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
     token = serializers.CharField(allow_blank=False, read_only=True)
-    nick_name = serializers.CharField(required=False, allow_blank=False)
+    new_id = serializers.CharField(allow_blank=False)
+    nick_name = serializers.CharField(required=False, allow_blank=True)
     phone_num = serializers.CharField(required=None, label=None)
+    # token 생성해주는거 만들어버리기 (뷰에다가) 아 개졸려
 
     class Meta:
         model = SignUpModel
 
         fields = [
+            'new_id',
             'nick_name',
             'phone_num',
             'password',
@@ -53,13 +58,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {"write_only": True}}
 
     def validate(self, data):
+        new_id = data.get("new_id", None)
         phone_num = data.get("phone_num", None)
         nick_name = data.get("nick_name", None)
         password = data.get("password", None)
 
-        if not phone_num and not nick_name:
+        if not phone_num and not new_id:
             raise ValidationError(
-                "A nickname and phonenumber is required to login")
+                "A new_id and phonenumber is required to login")
 
         user = SignUpModel.objects.filter(
             Q(phone_num=phone_num) |
