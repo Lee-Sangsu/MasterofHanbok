@@ -17,59 +17,44 @@ import jwt
 import bcrypt
 from MasterHanbok.settings import SECRET_KEY
 from django.db import IntegrityError
+from rest_framework_jwt.views import ObtainJSONWebToken
+from rest_framework_jwt.settings import api_settings
+
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 
 
-class UserRegisterAPIView(generics.ListCreateAPIView):
-    serializer_class = UserCreateSerializer
-    permission_classes = [AllowAny]
-    queryset = SignUpModel.objects.all()
+class UserRegisterAPIView(ObtainJSONWebToken):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
 
-    # def post(self, request):
+        user = SignUpModel(
+            user_id=data['user_id'],
+            nickname=data['nickname'],
+            phone_num=data['phone_num'],
+            password=data['password'],
+        )
+        password = data['password'].encode('utf-8')
+#     입력된 패스워드를 바이트 형태로 인코딩
+        password_crypt = bcrypt.hashpw(password, bcrypt.gensalt())
+        # DB에 저장할 수 있는 유니코드 문자열 형태로 디코딩
+        password_crypt = password_crypt.decode('utf-8')
+        user.save()
 
-    # try:
-    #     hashed_password = bcrypt.hashpw(
-    #         data['password'].encode('utf-8'), bcrypt.gensalt())
-    #     SignUpModel(
-    #         nick_name=data['nick_name'],
-    #         password=hashed_password.decode('utf-8'),
-    #         phone_num=data['phone_num']
-    #     ).save()
-    #     return JsonResponse({'message': 'SUCCESS'}, status=200)
+        token = jwt.encode(
+            {'user_id': data['user_id']}, SECRET_KEY, algorithm="HS256")
+        # 유니코드 문자열로 디코딩
+        decodedToken = token.decode('utf-8')
 
-    # except TypeError:
-    #     return JsonResponse({'message': 'FAILED_HASHED'}, status=400)
-    # except KeyError:
-    #     return JsonResponse({'message': 'INVALID_KEYS'}, status=400)
-    # except IntegrityError:
-    #     data['nick_name'] in SignUpModel.objects.values_list(
-    #         'nick_name', flat=True)
-    #     return JsonResponse({'message': 'DUPLICATE_NICK_NAME'}, status=401)
-    # except IntegrityError:
-    #     data['phone_number'] in SignUpModel.objects.values_list(
-    #         'phone_number', flat=True)
-    #     return JsonResponse({'message': 'DUPLICATE_PHONE_NUMBER'}, status=401)
+        # signUpModel = SignUpModel.objects.filter(nickname=data['nickname'])
+        # serializedUser = json.loads(serialize('json', signUpModel))
 
-    #-----------밑에 있는 것들: 회원가입과 동시에 입력 정보들 암호화 하는 구문-----------#
-    # def post(self, request):
-    #     data = json.loads(request.body)
-    #     try:
-    #         password = data['password'].encode(
-    #             'utf-8')                 # 입력된 패스워드를 바이트 형태로 인코딩
-    #         password_crypt = bcrypt.hashpw(
-    #             password, bcrypt.gensalt())  # 암호화된 비밀번호 생성
-    #         # DB에 저장할 수 있는 유니코드 문자열 형태로 디코딩
-    #         password_crypt = password_crypt.decode('utf-8')
-    #         #====================#
-    #         SignUpModel(
-    #             nick_name=data['nick_name'],
-    #             password=password_crypt
+        jsonex = user.nickname
+        return JsonResponse({'token': decodedToken, 'user_nickname': jsonex}, status=200)
 
-    # 암호화된 비밀번호를 DB에 저장
-    #         ).save()
-    #         return HttpResponse(status=200)
-
-    #     except KeyError:
-    #         return JsonResponse({"message": "INVALID_KEYS"}, status=400)
+        # except KeyError:
+        #     return JsonResponse({"message": "INVALID_KEYS"}, status=400)
 
 
 class UserLoginAPIView(APIView):
@@ -114,19 +99,6 @@ class UserLoginAPIView(APIView):
 
     #     except KeyError:
     #         return JsonResponse({"message": "INVALID_KEYS"}, status=400)
-
-
-class TokenCheckView(View):
-    def post(self, request):
-        data = json.loads(request.body)
-
-        user_token_info = jwt.decode(
-            data['token'], SECRET_KEY, algorithm='HS256')
-
-        if SignUpModel.objects.filter(phone_num=user_token_info['phone_num']).exists():
-            return HttpResponse(status=200)
-
-        return HttpResponse(status=403)
 
 
 # def login_decorator(func):

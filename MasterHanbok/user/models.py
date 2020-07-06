@@ -8,26 +8,26 @@ import bcrypt
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, new_id, phone_num, nick_name, password=None):
+    def create_user(self, user_id, phone_num, nickname, password=None):
         if not phone_num:
             raise ValueError(_('Users must have an phone number'))
 
         user = self.model(
-            new_id=new_id,
+            user_id=user_id,
             phone_num=phone_num,
-            nick_name=nick_name
+            nickname=nickname
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, new_id, phone_num, nick_name, password):
+    def create_superuser(self, user_id, phone_num, nickname, password):
         user = self.create_user(
-            new_id=new_id,
+            user_id=user_id,
             phone_num=phone_num,
             password=password,
-            nick_name=nick_name,
+            nickname=nickname,
         )
 
         user.is_superuser = True
@@ -36,25 +36,24 @@ class UserManager(BaseUserManager):
 
 
 class SignUpModel(AbstractBaseUser, PermissionsMixin):
-    new_id = models.CharField(
-        max_length=50, default='', unique=True, verbose_name=('new_id'))
-    nick_name = models.CharField(
-        max_length=4, default='', null=True)
+    user_id = models.CharField(
+        max_length=50, default='', unique=True, verbose_name=('user_id'))
+    nickname = models.CharField(max_length=4, default='', null=True)
     phone_num = models.CharField(max_length=15, default=None, null=False)
     objects = UserManager()
     """
     manager 부분만 고치면 잘 되겄다 잘 고쳐서 잘 됐다 호호홍
     """
 
-    REQUIRED_FIELDS = ('password', 'phone_num', 'nick_name')
-    USERNAME_FIELD = 'new_id'
+    REQUIRED_FIELDS = ('password', 'phone_num', 'nickname')
+    USERNAME_FIELD = 'user_id'
 
     is_anonymxous = False
     is_authenticated = True
     is_active = True
 
     def __str__(self):
-        return self.new_id
+        return self.user_id
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)

@@ -8,15 +8,20 @@ import jwt
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    def create(self, validated_data):
-        new_id = validated_data['new_id']
-        nick_name = validated_data['nick_name']
+    def create(self, validated_data, data):
+        user_id = validated_data['user_id']
+        nickname = validated_data['nickname']
         password = validated_data['password']
         phone_num = validated_data['phone_num']
+        # token = serializers.CharField(allow_blank=False, read_only=True)
+
+        if not phone_num and not user_id:
+            raise ValidationError(
+                "A new_id and phonenumber is required to login")
 
         user_obj = SignUpModel(
-            new_id=new_id,
-            nick_name=nick_name,
+            user_id=user_id,
+            nickname=nickname,
             phone_num=phone_num,
         )
 
@@ -29,9 +34,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = SignUpModel
         fields = [
             'new_id',
-            'nick_name',
+            'nickname',
             'password',
             'phone_num',
+            'token',
         ]
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -40,8 +46,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.ModelSerializer):
     token = serializers.CharField(allow_blank=False, read_only=True)
-    new_id = serializers.CharField(required=True)
-    nick_name = serializers.CharField(required=False, allow_blank=True)
+    user_id = serializers.CharField(required=True)
+    nickname = serializers.CharField(required=False, allow_blank=True)
     phone_num = serializers.CharField(required=None, label=None)
     # token 생성해주는거 만들어버리기 (뷰에다가) 아 개졸려
 
@@ -49,8 +55,8 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = SignUpModel
 
         fields = [
-            'new_id',
-            'nick_name',
+            'user_id',
+            'nickname',
             'phone_num',
             'password',
             'token',
@@ -58,19 +64,19 @@ class UserLoginSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {"write_only": True}}
 
     def validate(self, data):
-        new_id = data.get("new_id", None)
+        user_id = data.get("user_id", None)
         phone_num = data.get("phone_num", None)
-        nick_name = data.get("nick_name", None)
+        nickname = data.get("nickname", None)
         password = data.get("password", None)
 
-        if not phone_num and not new_id:
+        if not phone_num and not user_id:
             raise ValidationError(
                 "A new_id and phonenumber is required to login")
 
         user = SignUpModel.objects.filter(
             Q(phone_num=phone_num) |
-            Q(nick_name=nick_name) |
-            Q(new_id=new_id)
+            Q(nickname=nickname) |
+            Q(user_id=user_id)
         ).distinct()
 
         if user.exists() and user.count() == 1:
