@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user',
+    'MasterHanbok',
     'rest_framework',
     'rest_framework.authtoken',
 ]
@@ -83,7 +83,7 @@ JWT_AUTH = {
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
 }
 
-AUTH_USER_MODEL = 'user.SignUpModel'
+AUTH_USER_MODEL = 'MasterHanbok.SignUpModel'
 
 TEMPLATES = [
     {

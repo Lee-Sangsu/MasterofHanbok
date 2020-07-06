@@ -8,7 +8,6 @@ from django.core.serializers import serialize
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from .serializer import UserCreateSerializer, UserLoginSerializer
 from rest_framework.permissions import AllowAny
 import time
 import json
@@ -57,12 +56,12 @@ class UserRegisterAPIView(ObtainJSONWebToken):
         #     return JsonResponse({"message": "INVALID_KEYS"}, status=400)
 
 
-class UserLoginAPIView(APIView):
+# class UserLoginAPIView(APIView):
 
-    # post를 하기 때문에 localhost:8000/api/test/login 으로 데이터를 확인할 수 없음
-    # localhost:8000/api/test/login으로 확인하기 위해서는!
-    serializer_class = UserCreateSerializer
-    permission_classes = [AllowAny]
+#     # post를 하기 때문에 localhost:8000/api/test/login 으로 데이터를 확인할 수 없음
+#     # localhost:8000/api/test/login으로 확인하기 위해서는!
+#     serializer_class = UserCreateSerializer
+#     permission_classes = [AllowAny]
 
     # 이게 회원가입 할떄 인코팅 하고, login때 디코딩 하는게 맞는 것 같아. 다시 뷰 수정해봐 모델은 딱히 문제없고, url도 문제는 없는데 serializer랑 view를 연결해야 해서 좀 까다롭긴 할테지만 화이팅 해라 모르면 희종썜한테 물어보고
 
