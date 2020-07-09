@@ -73,9 +73,9 @@ def login_decorator(func):
     return wrapper
 
 
-class hanbokRequestView(View):
-    @login_decorator
-    def post(self, request, *args, **kwargs):
-        pass
+# class hanbokRequestView(View):
+#     @login_decorator
+#     def post(self, request, *args, **kwargs):
+#         pass
 
 # pk 쏴줘야 함. Objects.all 조지면 되겄다.
