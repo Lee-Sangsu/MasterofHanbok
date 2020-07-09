@@ -64,16 +64,16 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
     #     self.phone_num = SignUpModel.phone_num
     #     self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
-    class RequestModel(models.Model):
-        # 아직 안나왔어..
-        # date =
-        person = models.CharField()
-        making_type = models.CharField()
-        age = models.IntegerField()  # CharField?
-        season = models.CharField()
-        detail_image = models.CharField()
-        fabric = models.CharField()
-        memo = models.CharField()
-        datetime = models.DateTimeField()
+    # class RequestModel(models.Model):
+    #     # 아직 안나왔어..
+    #     # date =
+    #     person = models.CharField()
+    #     making_type = models.CharField()
+    #     age = models.IntegerField()  # CharField?
+    #     season = models.CharField()
+    #     detail_image = models.CharField()
+    #     fabric = models.CharField()
+    #     memo = models.CharField()
+    #     datetime = models.DateTimeField()
 
         # class Meta:
