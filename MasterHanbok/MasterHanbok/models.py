@@ -39,6 +39,7 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
         max_length=50, default='', unique=True, verbose_name=('user_id'))
     nickname = models.CharField(max_length=4, default='', null=True)
     phone_num = models.CharField(max_length=15, default=None, null=False)
+    # requests = models.ForeignKey(RequestModel)
     objects = UserManager()
     """
     manager 부분만 고치면 잘 되겄다 잘 고쳐서 잘 됐다 호호홍
@@ -62,3 +63,17 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
     #     self.nick_name = SignUpModel.nick_name
     #     self.phone_num = SignUpModel.phone_num
     #     self.password = bcrypt.hashpw(password, bcrypt.gensalt())
+
+    class RequestModel(models.Model):
+        # 아직 안나왔어..
+        # date =
+        person = models.CharField()
+        making_type = models.CharField()
+        age = models.IntegerField()  # CharField?
+        season = models.CharField()
+        detail_image = models.CharField()
+        fabric = models.CharField()
+        memo = models.CharField()
+        datetime = models.DateTimeField()
+
+        # class Meta:
