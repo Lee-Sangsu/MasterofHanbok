@@ -66,7 +66,8 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
 
     # class RequestModel(models.Model):
     #     # 아직 안나왔어..
-    #     # date =
+    #     requested_user = models.ForeignKey(
+    #         SignUpModel, on_delete=models.CASCADE)
     #     person = models.CharField()
     #     making_type = models.CharField()
     #     age = models.IntegerField()  # CharField?
@@ -75,5 +76,3 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
     #     fabric = models.CharField()
     #     memo = models.CharField()
     #     datetime = models.DateTimeField()
-
-        # class Meta:
