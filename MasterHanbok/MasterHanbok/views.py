@@ -76,11 +76,15 @@ def login_decorator(func):
 class hanbokRequestView(View):
     # @login_decorator
     # def get(self, request, *args, **kwargs):
-    #     """
-    #     1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
-    #     2.
-    #     3. 해당 user의 RequestModel을 filter구문으로 뽑아와
-    #     """
+    # """
+    # 1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
+    # 2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
+    # 3. Json으로 출력하는데, 형식은 아래와 같음.
+    # {
+
+    # }
+
+    # """
 
     @login_decorator
     def post(self, request, *args, **kwargs):
@@ -114,7 +118,7 @@ class hanbokRequestView(View):
                 making_type=result['making_type'],
                 age=result['age'],
                 season=result['season'],
-                detailImage=result['detailImage'],
+                # detailImage=result['detailImage'],
                 fabric=result['fabric'],
                 memo=result['memo'],
             ).save
