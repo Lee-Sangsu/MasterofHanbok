@@ -74,27 +74,17 @@ def login_decorator(func):
 
 
 class hanbokRequestView(View):
+    # @login_decorator
+    # def get(self, request, *args, **kwargs):
+    #     """
+    #     1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
+    #     2.
+    #     3. 해당 user의 RequestModel을 filter구문으로 뽑아와
+    #     """
+
     @login_decorator
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-
-        # Request : {
-        #     DetailRequest : [
-        #         {
-        #             1 detail
-        #         },
-        #         {
-        #             2 detail
-        #         }
-        #     ]
-        #     end_date : "",
-        # }
-        # -> detailrequest 접근하려면
-        # 변수 = data['detailrequest']이렇게 할당해서 접근해
-        # 그 다음에 DetailRequest는 해당 모델에, 나머지는 requestmodel에 save 하라
-        # If DetailRequest > 6, return error
-
-        """token decode해서 request_id에 저장하는 문장 추가하면 끝끄르끝끝"""
 
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
@@ -117,9 +107,7 @@ class hanbokRequestView(View):
         requestModel.save()
         request = requestModel.pk
 
-        # request = RequestModel.objects.get(end_date=end_date)
-
-        for result in data['requests']:
+        for result in data['detail_requests']:
             DetailRequestModel(
                 request_id=request,
                 person=result['person'],
