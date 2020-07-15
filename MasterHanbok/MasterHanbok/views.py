@@ -44,7 +44,7 @@ class UserRegisterAPIView(ObtainJSONWebToken):
         user.save()
 
         token = jwt.encode(
-            {'id': user.id}, SECRET_KEY, algorithm="HS256")
+            {'id': user.pk}, SECRET_KEY, algorithm="HS256")
         # 유니코드 문자열로 디코딩
         decodedToken = token.decode('utf-8')
 
@@ -76,15 +76,18 @@ def login_decorator(func):
 class hanbokRequestView(View):
     # @login_decorator
     # def get(self, request, *args, **kwargs):
-    # """
-    # 1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
-    # 2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
-    # 3. Json으로 출력하는데, 형식은 아래와 같음.
-    # {
+    #     """
+    #     1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
+    #     2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
+    #     3. Json으로 출력하는데, 형식은 post로 받은 형식과 같음.
+    #     """
 
-    # }
+    #     access_token = request.headers.get('Authorization', None)
+    #     payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
+    #     user = SignUpModel.objects.get(id=payload['id'])
+    #     malcha = json.loads(serialize('json', user))
 
-    # """
+    #     return JsonResponse({''})
 
     @login_decorator
     def post(self, request, *args, **kwargs):

@@ -89,7 +89,7 @@ class DetailRequestModel(models.Model):
     making_type = models.CharField(max_length=10)
     age = models.CharField(max_length=7)  # CharField?
     season = models.CharField(max_length=10)
-    # detailImage = models.CharField(max_length=50)
+    detailImage = models.CharField(max_length=50, null=Ture)
     fabric = models.CharField(max_length=10)
     memo = models.CharField(max_length=100)
 
