@@ -74,20 +74,24 @@ def login_decorator(func):
 
 
 class hanbokRequestView(View):
-    # @login_decorator
-    # def get(self, request, *args, **kwargs):
-    #     """
-    #     1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
-    #     2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
-    #     3. Json으로 출력하는데, 형식은 post로 받은 형식과 같음.
-    #     """
+    @login_decorator
+    def get(self, request, *args, **kwargs):
+        """
+        1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
+        2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
+        3. Json으로 출력하는데, 형식은 post로 받은 형식과 같음.
+        """
 
-    #     access_token = request.headers.get('Authorization', None)
-    #     payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
-    #     user = SignUpModel.objects.get(id=payload['id'])
-    #     malcha = json.loads(serialize('json', user))
+        access_token = request.headers.get('Authorization', None)
+        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
+        user = SignUpModel.objects.get(id=payload['id'])
+        requests = RequestModel.objects.filter(requested_user=user)
+        malcha = json.loads(serialize('json', requests))
+        # 까지 하면 requested_user이랑 end_date만 뽑힘, detailrequests까지 뽑으려면 DetailRequestModel부터 아래로 하나씩 들어가야 할 것 같음.
 
-    #     return JsonResponse({''})
+        # detailrequests = DetailRequestModel.objects.filter()
+
+        return JsonResponse({'detail_requests': malcha}, status=200)
 
     @login_decorator
     def post(self, request, *args, **kwargs):
