@@ -4,7 +4,6 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
 import bcrypt
-from django.db.models.signals import post_save
 
 
 class UserManager(BaseUserManager):
@@ -36,10 +35,10 @@ class UserManager(BaseUserManager):
 
 
 class SignUpModel(AbstractBaseUser, PermissionsMixin):
-    # id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     user_id = models.CharField(
         max_length=50, default='', unique=True, verbose_name=('user_id'))
-    nickname = models.CharField(max_length=4, default='')
+    nickname = models.CharField(max_length=4, default='', null=True)
     phone_num = models.CharField(max_length=15, default=None, null=False)
     # requests = models.ForeignKey(RequestModel)
     objects = UserManager()
@@ -71,33 +70,14 @@ class RequestModel(models.Model):
     requested_user = models.ForeignKey(
         SignUpModel, on_delete=models.CASCADE, null=True)
     end_date = models.CharField(max_length=20)
-    objects = models.Manager()
-
-    def __str__(self):
-        return self.end_date
-
-    def create_requests(self, sender, instance, created, **kwargs):
-        if created:
-            SignUpModel.objects.create(requested_user=instance)
-
-    post_save.connect(create_requests, sender=requested_user)
 
 
 class DetailRequestModel(models.Model):
     request = models.ForeignKey(RequestModel, on_delete=models.CASCADE)
     person = models.CharField(max_length=10)
     making_type = models.CharField(max_length=10)
-    age = models.CharField(max_length=7)  # CharField?
+    age = models.IntegerField()  # CharField?
     season = models.CharField(max_length=10)
     detailImage = models.CharField(max_length=50)
     fabric = models.CharField(max_length=10)
     memo = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.person
-
-    def create_detailrequest(self, sender, instance, created, **kwargs):
-        if created:
-            RequestModel.objects.create(request=instance)
-
-    post_save.connect(create_detailrequest, sender=request)

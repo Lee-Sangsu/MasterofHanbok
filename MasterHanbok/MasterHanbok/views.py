@@ -1,4 +1,4 @@
-from .models import SignUpModel
+from .models import SignUpModel, RequestModel, DetailRequestModel
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
@@ -44,7 +44,7 @@ class UserRegisterAPIView(ObtainJSONWebToken):
         user.save()
 
         token = jwt.encode(
-            {'user_id': data['user_id']}, SECRET_KEY, algorithm="HS256")
+            {'id': user.id}, SECRET_KEY, algorithm="HS256")
         # 유니코드 문자열로 디코딩
         decodedToken = token.decode('utf-8')
 
@@ -61,7 +61,7 @@ def login_decorator(func):
         try:
             access_token = request.headers.get('Authorization', None)
             payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
-            user = SignUpModel.objects.get(user_id=payload['user_id'])
+            user = SignUpModel.objects.get(id=payload['id'])
             request.user = user
 
         except jwt.exceptions.DecodeError:
@@ -73,9 +73,62 @@ def login_decorator(func):
     return wrapper
 
 
-# class hanbokRequestView(View):
-#     @login_decorator
-#     def post(self, request, *args, **kwargs):
-#         pass
+class hanbokRequestView(View):
+    @login_decorator
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
 
-# pk 쏴줘야 함. Objects.all 조지면 되겄다.
+        # Request : {
+        #     DetailRequest : [
+        #         {
+        #             1 detail
+        #         },
+        #         {
+        #             2 detail
+        #         }
+        #     ]
+        #     end_date : "",
+        # }
+        # -> detailrequest 접근하려면
+        # 변수 = data['detailrequest']이렇게 할당해서 접근해
+        # 그 다음에 DetailRequest는 해당 모델에, 나머지는 requestmodel에 save 하라
+        # If DetailRequest > 6, return error
+
+        """token decode해서 request_id에 저장하는 문장 추가하면 끝끄르끝끝"""
+
+        access_token = request.headers.get('Authorization', None)
+        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
+        user = SignUpModel.objects.get(id=payload['id'])
+
+        """
+        1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
+        2. user라는 method를 requested_user라는 foreignkey field에 저장해
+        3. requestmodel의 모든 Object를 requested_user라는 Method에 할당해
+        4. requested_user라는 method를 detailrequestmodel의 request에 저장해
+        """
+
+        end_date = data['end_date']
+
+        requestModel = RequestModel(
+            requested_user=user,
+            end_date=end_date,
+        )
+
+        requestModel.save()
+        request = requestModel.pk
+
+        # request = RequestModel.objects.get(end_date=end_date)
+
+        for result in data['requests']:
+            DetailRequestModel(
+                request_id=request,
+                person=result['person'],
+                making_type=result['making_type'],
+                age=result['age'],
+                season=result['season'],
+                detailImage=result['detailImage'],
+                fabric=result['fabric'],
+                memo=result['memo'],
+            ).save
+
+        return HttpResponse(status=200)
