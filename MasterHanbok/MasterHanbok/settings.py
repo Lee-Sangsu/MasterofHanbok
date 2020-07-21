@@ -116,7 +116,7 @@ DATABASES = {
         'NAME': 'garlic',
         'USER': 'garlic',
         'PASSWORD': '',
-        'HOST': 'localhost',
+        'HOST': 'localhost, 5432',
         'PORT': '',
     }
 }
