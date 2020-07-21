@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.utils.translation import ugettext_lazy as _
 import bcrypt
 from django.db.models.signals import post_save
+from django.contrib.postgres.fields import JSONField, ArrayField
 
 
 class UserManager(BaseUserManager):
@@ -71,6 +72,7 @@ class RequestModel(models.Model):
     requested_user = models.ForeignKey(
         SignUpModel, on_delete=models.CASCADE, null=True)
     end_date = models.CharField(max_length=20)
+    detail_requests = JSONField()
     objects = models.Manager()
 
     def __str__(self):
@@ -83,22 +85,22 @@ class RequestModel(models.Model):
     post_save.connect(create_requests, sender=requested_user)
 
 
-class DetailRequestModel(models.Model):
-    request = models.ForeignKey(RequestModel, on_delete=models.CASCADE)
-    person = models.CharField(max_length=10)
-    making_type = models.CharField(max_length=10)
-    age = models.CharField(max_length=7)  # CharField?
-    season = models.CharField(max_length=10)
-    detailImage = models.CharField(max_length=50, null=True)
-    fabric = models.CharField(max_length=10)
-    memo = models.CharField(max_length=100)
-    objects = models.Manager()
+# class DetailRequestModel(models.Model):
+#     request = models.ManyToManyField(RequestModel, on_delete=models.CASCADE)
+#     person = models.CharField(max_length=10)
+#     making_type = models.CharField(max_length=10)
+#     age = models.CharField(max_length=7)  # CharField?
+#     season = models.CharField(max_length=10)
+#     # detail_image = models.CharField(max_length=50)
+#     fabric = models.CharField(max_length=10)
+#     memo = models.CharField(max_length=100)
+#     objects = models.Manager()
 
-    def __str__(self):
-        return self.person
+#     def __str__(self):
+#         return self.person
 
-    def create_detailrequest(self, sender, instance, created, **kwargs):
-        if created:
-            RequestModel.objects.create(request=instance)
+#     def create_detailrequest(self, sender, instance, created, **kwargs):
+#         if created:
+#             RequestModel.objects.create(request=instance)
 
-    post_save.connect(create_detailrequest, sender=request)
+#     post_save.connect(create_detailrequest, sender=request)

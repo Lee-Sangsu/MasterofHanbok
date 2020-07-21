@@ -1,10 +1,9 @@
-from .models import SignUpModel, RequestModel, DetailRequestModel
+from .models import SignUpModel, RequestModel
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
-# from .serializers import PostSerializer
+from django.forms import model_to_dict
 from django.shortcuts import render, get_object_or_404
-from django.core.serializers import serialize
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
@@ -19,6 +18,9 @@ from django.db import IntegrityError
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
 from django.core.exceptions import ObjectDoesNotExist
+from .serializer import requestJSONSerializer
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models.query import QuerySet
 
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -80,20 +82,34 @@ class hanbokRequestView(View):
         1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
         2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
         3. Json으로 출력하는데, 형식은 post로 받은 형식과 같음.
+        4. detailreuqest objects get pk해놓고 request array에 append해.
         """
 
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.get(id=payload['id'])
-        requests = RequestModel.objects.filter(requested_user=user)
-        malcha = json.loads(serialize('json', requests))
-        # 까지 하면 requested_user이랑 end_date만 뽑힘, detailrequests까지 뽑으려면 DetailRequestModel부터 아래로 하나씩 들어가야 할 것 같음.
 
-        # detailrequests = DetailRequestModel.objects.filter()
+        # detailrequests = DetailRequestModel.objects.filter(request=requests)
 
-        return JsonResponse({'detail_requests': malcha}, status=200)
+        filterRequests = RequestModel.objects.filter(
+            requested_user=user).order_by('-id')[:3].values()
 
-    @login_decorator
+        # serializedFilterRequest = json.loads(serialize(filterRequests)) or
+        # filterRequests.__dict__
+
+        # filterRequestsID = filterRequests['pk']
+
+        # getRequests = RequestModel.objects.get(
+        #     requested_user=user).oreder_by('-id')[0]
+
+        # serializedJSON = serializers.serialize('json', filterRequests, fields=(
+        #     'requested_user_id', 'end_date', 'detail_requests'))
+
+        dumpJSON = json.dumps(list(filterRequests))
+
+        return HttpResponse(dumpJSON, status=200)
+
+    @ login_decorator
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
 
@@ -103,31 +119,33 @@ class hanbokRequestView(View):
 
         """
         1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
-        2. user라는 method를 requested_user라는 foreignkey field에 저장해
-        3. requestmodel의 모든 Object를 requested_user라는 Method에 할당해
-        4. requested_user라는 method를 detailrequestmodel의 request에 저장해
+        2. json.body에서 'end_date', 'detail_request' 가져와 해당 token의 id를 가진 user의 RequestModel에 저장.
         """
 
         end_date = data['end_date']
 
+        json_detail_request = data.get('detail_request')
+
         requestModel = RequestModel(
             requested_user=user,
             end_date=end_date,
+            detail_requests=json_detail_request,
         )
 
         requestModel.save()
-        request = requestModel.pk
 
-        for result in data['detail_requests']:
-            DetailRequestModel(
-                request_id=request,
-                person=result['person'],
-                making_type=result['making_type'],
-                age=result['age'],
-                season=result['season'],
-                # detailImage=result['detailImage'],
-                fabric=result['fabric'],
-                memo=result['memo'],
-            ).save
+        # det = data['detail_requests']
+
+        # for detail in det:
+        #     DetailRequestModel(
+        #         request_id=requestModel.pk,
+        #         person=detail['person'],
+        #         making_type=detail['making_type'],
+        #         age=detail['age'],
+        #         season=detail['season'],
+        #         # detail_image=result['detail_image'],
+        #         fabric=detail['fabric'],
+        #         memo=detail['memo'],
+        #     ).save
 
         return HttpResponse(status=200)
