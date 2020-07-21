@@ -3,7 +3,7 @@ Description=uWSGI service
 After=syslog.target
 
 [Service]
-ExecStart=/home/ubuntu/myvenv/bin/uwsgi -i /srv/MasterofHanbok/MasterHanbok/.config/uwsgi/mysite.ini
+ExecStart=/home/ubuntu/uwsgienv/bin/uwsgi -i /srv/MasterofHanbok/MasterHanbok/.config/uwsgi/masterhanbok.ini
 
 Restart=always
 KillSignal=SIGQUIT
