@@ -113,8 +113,8 @@ WSGI_APPLICATION = 'MasterHanbok.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'garlic',
-        'USER': 'garlic',
+        'NAME': 'leesangsu',
+        'USER': 'leesangsu',
         'PASSWORD': '',
         'HOST': 'localhost, 5432',
         'PORT': '',
