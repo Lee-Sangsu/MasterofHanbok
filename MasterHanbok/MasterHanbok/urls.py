@@ -20,5 +20,5 @@ from .views import UserRegisterAPIView, hanbokRequestView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user', UserRegisterAPIView.as_view(), name='register'),
-    path('requests/<int:user_id>', hanbokRequestView.as_view(), name='request'),
+    path('requests', hanbokRequestView.as_view(), name='request'),
 ]

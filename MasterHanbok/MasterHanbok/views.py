@@ -124,7 +124,7 @@ class hanbokRequestView(View):
 
         end_date = data['end_date']
 
-        json_detail_request = data.get('detail_request')
+        json_detail_request = data['detail_requests']
 
         requestModel = RequestModel(
             requested_user=user,
