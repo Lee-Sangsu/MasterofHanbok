@@ -73,6 +73,7 @@ class RequestModel(models.Model):
         SignUpModel, on_delete=models.CASCADE, null=True)
     end_date = models.CharField(max_length=20)
     detail_requests = JSONField()
+    ended_or_not = models.BooleanField(default=False)
     objects = models.Manager()
 
     def __str__(self):

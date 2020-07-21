@@ -92,7 +92,7 @@ class hanbokRequestView(View):
         # detailrequests = DetailRequestModel.objects.filter(request=requests)
 
         filterRequests = RequestModel.objects.filter(
-            requested_user=user).order_by('-id')[:3].values()
+            requested_user=user, ended_or_not=False).order_by('-id').values()
 
         # serializedFilterRequest = json.loads(serialize(filterRequests)) or
         # filterRequests.__dict__
@@ -147,5 +147,24 @@ class hanbokRequestView(View):
         #         fabric=detail['fabric'],
         #         memo=detail['memo'],
         #     ).save
+
+        return HttpResponse(status=200)
+
+    @ login_decorator
+    def put(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+
+        access_token = request.headers.get('Authorization', None)
+        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
+        user = SignUpModel.objects.get(id=payload['id'])
+
+        end_date = data['end_date']
+
+        make_end_or_not = RequestModel.objects.get(
+            requested_user=user, end_date=end_date)
+
+        make_end_or_not.end_date = end_date
+        make_end_or_not.ended_or_not = True
+        make_end_or_not.save()
 
         return HttpResponse(status=200)
