@@ -40,7 +40,7 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
     # id = models.AutoField(primary_key=True)
     user_id = models.CharField(
         max_length=50, default='', unique=True, verbose_name=('user_id'))
-    nickname = models.CharField(max_length=4, default='')
+    nickname = models.CharField(default='')
     phone_num = models.CharField(max_length=15, default=None, null=False)
     # requests = models.ForeignKey(RequestModel)
     objects = UserManager()
@@ -86,22 +86,42 @@ class RequestModel(models.Model):
     post_save.connect(create_requests, sender=requested_user)
 
 
-# class DetailRequestModel(models.Model):
-#     request = models.ManyToManyField(RequestModel, on_delete=models.CASCADE)
-#     person = models.CharField(max_length=10)
-#     making_type = models.CharField(max_length=10)
-#     age = models.CharField(max_length=7)  # CharField?
-#     season = models.CharField(max_length=10)
-#     # detail_image = models.CharField(max_length=50)
-#     fabric = models.CharField(max_length=10)
-#     memo = models.CharField(max_length=100)
-#     objects = models.Manager()
+class Bidders(models.Model):
+    store_name = models.CharField()
+    phone_num = models.CharField()
+    location = models.CharField()
+    store_image = models.CharField()
+    introduce = models.CharField()
 
-#     def __str__(self):
-#         return self.person
+    class Meta:
+        db_table = 'bidder'
 
-#     def create_detailrequest(self, sender, instance, created, **kwargs):
-#         if created:
-#             RequestModel.objects.create(request=instance)
 
-#     post_save.connect(create_detailrequest, sender=request)
+class BiddingModel(models.Model):
+    bidder = models.ForeignKey(Bidders, on_delete=models.CASCADE)
+    request = models.ForeignKey(RequestModel, on_delete=models.CASCADE)
+    price = models.CharField()
+    objects = models.Manager
+
+    class Meta:
+        db_table = 'bid'
+
+
+class DetailBiddingModel(models.Model):
+    price_and_discount = models.CharField()
+    service_product = models.CharField()
+    design = models.CharField()
+    design_images = ArrayField(models.CharField(default=''))
+    color = models.CharField()
+    color_images = ArrayField(models.CharField(default=''))
+    detail = models.CharField()
+    detail_images = ArrayField(models.CharField(default=''))
+    note = models.CharField()
+    note_images = ArrayField(models.CharField(default=''))
+    bidding = models.OneToOneField(
+        BiddingModel, on_delete=models.CASCADE, null=True)
+
+    objects = models.Manager
+
+    class Meta:
+        db_table = 'detail_bid'

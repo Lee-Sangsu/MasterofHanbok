@@ -1,4 +1,4 @@
-"""MasterHanbok URL Configuration
+"""request URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -14,11 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from .views import UserRegisterAPIView, hanbokRequestView
+from django.urls import path
+from request.views import hanbokRequestView, biddings, specific_biddings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('user', UserRegisterAPIView.as_view(), name='register'),
-    path('requests/', include('requests')),
+    path('', hanbokRequestView.as_view()),
+    path('<int:pk>/biddings/', biddings.as_view)
+
 ]
