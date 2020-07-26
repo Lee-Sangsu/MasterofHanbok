@@ -19,6 +19,6 @@ from request.views import hanbokRequestView, Biddings
 
 urlpatterns = [
     path('', hanbokRequestView.as_view()),
-    path('<int:pk>/biddings/', Biddings.as_view)
+    path('/<int:pk>/biddings/', Biddings.as_view)
 
 ]

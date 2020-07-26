@@ -116,6 +116,14 @@ DATABASES = {
         'PASSWORD': '0000',
         'HOST': 'localhost, 5432',
         'PORT': '',
+    },
+    'ManeulDB': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'garlic',
+        'USER': 'garlic',
+        'PASSWORD': '',
+        'HOST': 'localhost, 5432',
+        'PORT': '',
     }
 }
 
