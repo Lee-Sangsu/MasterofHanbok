@@ -32,18 +32,15 @@ class UserRegisterAPIView(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
+            hashd_password = bcrypt.hashpw(
+                data['password'].encode('utf-8'), bcrypt.gensalt())
 
             user = SignUpModel(
                 user_id=data['user_id'],
                 nickname=data['nickname'],
                 phone_num=data['phone_num'],
-                password=data['password'],
+                password=hashd_password.decode('utf-8'),
             )
-            password = data['password'].encode('utf-8')
-    #     입력된 패스워드를 바이트 형태로 인코딩
-            password_crypt = bcrypt.hashpw(password, bcrypt.gensalt())
-            # DB에 저장할 수 있는 유니코드 문자열 형태로 디코딩
-            password_crypt = password_crypt.decode('utf-8')
             user.save()
             return JsonResponse({'message': "SUCCESS"}, status=200)
         except KeyError:
