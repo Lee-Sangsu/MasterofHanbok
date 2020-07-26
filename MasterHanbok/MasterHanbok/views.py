@@ -68,8 +68,9 @@ class UserLoginAPIView(ObtainJSONWebToken):
                     token = jwt.encode(
                         {'id': user.id}, SECRET_KEY, algorithm="HS256")
                     token = token.decode('utf-8')
+                    nickname = user.nickname
 
-                    return JsonResponse({"token": token}, status=200)
+                    return JsonResponse({"token": token, "nickname": nickname}, status=200)
 
                 else:
 
