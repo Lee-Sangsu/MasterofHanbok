@@ -52,19 +52,15 @@ class UserLoginAPIView(ObtainJSONWebToken):
         data = json.loads(request.body)
 
         try:
-            # 만약 signup의 데이터 중에 request로 받아온 data['name']키값이 존재한다면
             if SignUpModel.objects.filter(user_id=data['user_id']).exists():
 
-                # 객체를 가져온다.SignUpModel의 데이터 중 name = data['name']인 데이터를 새로운 객체로 만든다.
                 user = SignUpModel.objects.get(user_id=data['user_id'])
                 user_password = user.password.encode('utf-8')
 
                 if bcrypt.checkpw(data['password'].encode('utf-8'), user_password):
-
                     # 토큰발행
                     token = jwt.encode(
-                        {'id': user.id}, SECRET_KEY, algorithm="HS256")
-                    token = token.decode('utf-8')
+                        {'id': user.id}, SECRET_KEY, algorithm="HS256").decode('utf-8')
                     nickname = user.nickname
 
                     return JsonResponse({"token": token, "nickname": nickname}, status=200)
