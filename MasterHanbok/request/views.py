@@ -137,13 +137,30 @@ class hanbokRequestView(View):
 class Biddings(View):
     @ login_decorator
     def get(self, request, *args, pk):
-        """1. request pk에 해당하는 requestModel을 가져와
-        2. 그 requestModeldms requests인데, 그게 BiddingModel의 request인 Bidding들 가져와
-        3. 그 Bidding들이 biddings인데, 얘랑 연결된 bidder, detailBidding들도 가져와. (_set으로 가져오렴)"""
-        requests = RequestModel.objects.get(id=pk)
-        biddings = BiddingModel.objects.filter(request=requests)
-        # detailBidding = DetailBiddingModel.objects.filter(bidding=biddings)
-        bidder
+        # """1. request pk에 해당하는 requestModel을 가져와
+        # 2. 그 requestModeldms requests인데, 그게 BiddingModel의 request인 Bidding들 가져와
+        # 3. 그 Bidding들이 biddings인데, 얘랑 연결된 bidder, detailBidding들도 가져와. (_set으로 가져오렴)"""
+        # requests = RequestModel.objects.get(id=pk)
+        # biddings = BiddingModel.objects.filter(request=requests)
+        # # detailBidding = DetailBiddingModel.objects.filter(bidding=biddings)
+        # bidder = BiddingModel.bidder_set.get()
+        # detail_bid = BiddingModel.detail_bidding_set.all()
+
+        # listJson = {
+        #     "bidder": bidder,
+
+        # }
+
+        # a = json.dumps(list())
+
+        # """
+        # 1. serialize 다 해
+        # 2. json으로 한꺼번에 묶자
+        # 3. JsonResponse"""
+
+        # return JsonResponse()
+
+        pass
 
 
 class specific_biddings(View):

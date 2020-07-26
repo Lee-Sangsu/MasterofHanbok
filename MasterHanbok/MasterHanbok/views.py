@@ -30,32 +30,57 @@ jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 
 class UserRegisterAPIView(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+
+            user = SignUpModel(
+                user_id=data['user_id'],
+                nickname=data['nickname'],
+                phone_num=data['phone_num'],
+                password=data['password'],
+            )
+            password = data['password'].encode('utf-8')
+    #     입력된 패스워드를 바이트 형태로 인코딩
+            password_crypt = bcrypt.hashpw(password, bcrypt.gensalt())
+            # DB에 저장할 수 있는 유니코드 문자열 형태로 디코딩
+            password_crypt = password_crypt.decode('utf-8')
+            user.save()
+            return JsonResponse({'message': "SUCCESS"}, status=200)
+        except KeyError:
+            return JsonResponse({'message': "INVALID_KEYS"}, status=400)
+
+
+class UserLoginAPIView(ObtainJSONWebToken):
+    def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
 
-        user = SignUpModel(
-            user_id=data['user_id'],
-            nickname=data['nickname'],
-            phone_num=data['phone_num'],
-            password=data['password'],
-        )
-        password = data['password'].encode('utf-8')
-#     입력된 패스워드를 바이트 형태로 인코딩
-        password_crypt = bcrypt.hashpw(password, bcrypt.gensalt())
-        # DB에 저장할 수 있는 유니코드 문자열 형태로 디코딩
-        password_crypt = password_crypt.decode('utf-8')
-        user.save()
+        try:
+            # 만약 signup의 데이터 중에 request로 받아온 data['name']키값이 존재한다면
+            if SignUpModel.objects.filter(user_id=data['user_id']).exists():
 
-        token = jwt.encode(
-            {'id': user.pk}, SECRET_KEY, algorithm="HS256")
-        # 유니코드 문자열로 디코딩
-        decodedToken = token.decode('utf-8')
+                # 객체를 가져온다.SignUpModel의 데이터 중 name = data['name']인 데이터를 새로운 객체로 만든다.
+                user = SignUpModel.objects.get(user_id=data['user_id'])
+                user_password = user.password.encode('utf-8')
 
-        # signUpModel = SignUpModel.objects.filter(nickname=data['nickname'])
-        # serializedUser = json.loads(serialize('json', signUpModel))
+                if bcrypt.checkpw(data['password'].encode('utf-8'), user_password):
 
-        user_nickname = user.nickname
-        return JsonResponse({'token': decodedToken, 'user_nickname': user_nickname}, status=200)
-        # unique 하지 않은 id 입력했을 때 뜰 error메세지 cutomize 해야 해
+                    # 토큰발행
+                    token = jwt.encode(
+                        {'id': user.id}, SECRET_KEY, algorithm="HS256")
+                    token = token.decode('utf-8')
+
+                    return JsonResponse({"token": token}, status=200)
+
+                else:
+
+                    # 리턴해라 제이슨타입으로 {'message : 비밀번호가 틀렸습니다 !}
+                    return JsonResponse({'message': "비밀번호가 틀렸습니다!"}, status=401)
+
+            else:
+                return JsonResponse({'message': "일치하는 그거가 없습니다"}, status=400)
+        except KeyError:
+            # 리턴해라 제이슨타입으로 {message:INVALID_KEYS}
+            return JsonResponse({'mesaage': "INVALID_KEYS"}, status=400)
 
 
 def login_decorator(func):
@@ -73,98 +98,3 @@ def login_decorator(func):
             return JsonResponse({'message': 'INVALID_USER'}, status=400)
         return func(self, request, *args, **kwargs)
     return wrapper
-
-
-class hanbokRequestView(View):
-    @login_decorator
-    def get(self, request, *args, **kwargs):
-        """
-        1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
-        2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
-        3. Json으로 출력하는데, 형식은 post로 받은 형식과 같음.
-        4. detailreuqest objects get pk해놓고 request array에 append해.
-        """
-
-        access_token = request.headers.get('Authorization', None)
-        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
-        user = SignUpModel.objects.get(id=payload['id'])
-
-        # detailrequests = DetailRequestModel.objects.filter(request=requests)
-
-        filterRequests = RequestModel.objects.filter(
-            requested_user=user, ended_or_not=False).order_by('-id').values()
-
-        # serializedFilterRequest = json.loads(serialize(filterRequests)) or
-        # filterRequests.__dict__
-
-        # filterRequestsID = filterRequests['pk']
-
-        # getRequests = RequestModel.objects.get(
-        #     requested_user=user).oreder_by('-id')[0]
-
-        # serializedJSON = serializers.serialize('json', filterRequests, fields=(
-        #     'requested_user_id', 'end_date', 'detail_requests'))
-
-        dumpJSON = json.dumps(list(filterRequests))
-
-        return HttpResponse(dumpJSON, status=200)
-
-    @ login_decorator
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-
-        access_token = request.headers.get('Authorization', None)
-        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
-        user = SignUpModel.objects.get(id=payload['id'])
-
-        """
-        1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
-        2. json.body에서 'end_date', 'detail_request' 가져와 해당 token의 id를 가진 user의 RequestModel에 저장.
-        """
-
-        end_date = data['end_date']
-
-        json_detail_request = data['detail_requests']
-
-        requestModel = RequestModel(
-            requested_user=user,
-            end_date=end_date,
-            detail_requests=json_detail_request,
-        )
-
-        requestModel.save()
-
-        # det = data['detail_requests']
-
-        # for detail in det:
-        #     DetailRequestModel(
-        #         request_id=requestModel.pk,
-        #         person=detail['person'],
-        #         making_type=detail['making_type'],
-        #         age=detail['age'],
-        #         season=detail['season'],
-        #         # detail_image=result['detail_image'],
-        #         fabric=detail['fabric'],
-        #         memo=detail['memo'],
-        #     ).save
-
-        return HttpResponse(status=200)
-
-    @ login_decorator
-    def put(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-
-        access_token = request.headers.get('Authorization', None)
-        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
-        user = SignUpModel.objects.get(id=payload['id'])
-
-        end_date = data['end_date']
-
-        make_end_or_not = RequestModel.objects.get(
-            requested_user=user, end_date=end_date)
-
-        make_end_or_not.end_date = end_date
-        make_end_or_not.ended_or_not = True
-        make_end_or_not.save()
-
-        return HttpResponse(status=200)

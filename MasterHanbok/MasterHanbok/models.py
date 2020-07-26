@@ -40,7 +40,7 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
     # id = models.AutoField(primary_key=True)
     user_id = models.CharField(
         max_length=50, default='', unique=True, verbose_name=('user_id'))
-    nickname = models.CharField(default='')
+    nickname = models.CharField(max_length=40, default='')
     phone_num = models.CharField(max_length=15, default=None, null=False)
     # requests = models.ForeignKey(RequestModel)
     objects = UserManager()
@@ -87,41 +87,41 @@ class RequestModel(models.Model):
 
 
 class Bidders(models.Model):
-    store_name = models.CharField()
-    phone_num = models.CharField()
-    location = models.CharField()
-    store_image = models.CharField()
-    introduce = models.CharField()
+    store_name = models.CharField(max_length=15)
+    phone_num = models.CharField(max_length=15)
+    location = models.CharField(max_length=70)
+    store_image = models.CharField(max_length=70)
+    introduce = models.CharField(max_length=70)
+    objects = models.Manager()
 
     class Meta:
         db_table = 'bidder'
 
 
-class BiddingModel(models.Model):
-    bidder = models.ForeignKey(Bidders, on_delete=models.CASCADE)
-    request = models.ForeignKey(RequestModel, on_delete=models.CASCADE)
-    price = models.CharField()
-    objects = models.Manager
-
-    class Meta:
-        db_table = 'bid'
-
-
 class DetailBiddingModel(models.Model):
-    price_and_discount = models.CharField()
-    service_product = models.CharField()
-    design = models.CharField()
-    design_images = ArrayField(models.CharField(default=''))
-    color = models.CharField()
-    color_images = ArrayField(models.CharField(default=''))
-    detail = models.CharField()
-    detail_images = ArrayField(models.CharField(default=''))
-    note = models.CharField()
-    note_images = ArrayField(models.CharField(default=''))
-    bidding = models.OneToOneField(
-        BiddingModel, on_delete=models.CASCADE, null=True)
-
-    objects = models.Manager
+    price_and_discount = models.CharField(max_length=15)
+    service_product = models.CharField(max_length=30)
+    design = models.CharField(max_length=30)
+    design_images = ArrayField(models.CharField(max_length=70, default=''))
+    color = models.CharField(max_length=30)
+    color_images = ArrayField(models.CharField(max_length=70, default=''))
+    detail = models.CharField(max_length=70)
+    detail_images = ArrayField(models.CharField(max_length=70, default=''))
+    note = models.CharField(max_length=70)
+    note_images = ArrayField(models.CharField(max_length=70, default=''))
+    objects = models.Manager()
 
     class Meta:
         db_table = 'detail_bid'
+
+
+class BiddingModel(models.Model):
+    bidder = models.ForeignKey(Bidders, on_delete=models.CASCADE)
+    request = models.ForeignKey(RequestModel, on_delete=models.CASCADE)
+    detail_bidding = models.OneToOneField(
+        DetailBiddingModel, on_delete=models.SET_NULL, null=True)
+    price = models.CharField(max_length=30)
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'bid'
