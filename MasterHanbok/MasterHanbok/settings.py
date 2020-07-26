@@ -111,20 +111,12 @@ WSGI_APPLICATION = 'MasterHanbok.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'leesangsu',
-        'USER': 'leesangsu',
-        'PASSWORD': '0000',
-        'HOST': 'localhost, 5432',
-        'PORT': '',
-    },
-    'ManeulDB': {
-        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'garlic',
         'USER': 'garlic',
         'PASSWORD': '',
         'HOST': 'localhost, 5432',
         'PORT': '',
-    }
+    },
 }
 
 

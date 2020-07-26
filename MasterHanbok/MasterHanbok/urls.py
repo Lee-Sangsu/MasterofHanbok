@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user', UserRegisterAPIView.as_view(), name='register'),
     path('users', UserLoginAPIView.as_view()),
-    path('requests', include('request.urls'))
+    path('requests/', include('request.urls'))
 ]
