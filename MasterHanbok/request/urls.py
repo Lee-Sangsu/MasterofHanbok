@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from request.views import hanbokRequestView, Biddings
+from request.views import hanbokRequestView, Biddings, specific_biddings
 
 urlpatterns = [
     path('', hanbokRequestView.as_view()),
-    path('<int:pk>/biddings/', Biddings.as_view)
-
+    path('<int:pk>/biddings/', Biddings.as_view()),
+    path('<int:pk>/biddings/<int:bpk>', specific_biddings.as_view())
 ]

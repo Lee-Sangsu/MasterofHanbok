@@ -137,33 +137,23 @@ class hanbokRequestView(View):
 class Biddings(View):
     @ login_decorator
     def get(self, request, *args, pk):
-        # """1. request pk에 해당하는 requestModel을 가져와
-        # 2. 그 requestModeldms requests인데, 그게 BiddingModel의 request인 Bidding들 가져와
-        # 3. 그 Bidding들이 biddings인데, 얘랑 연결된 bidder, detailBidding들도 가져와. (_set으로 가져오렴)"""
-        # requests = RequestModel.objects.get(id=pk)
-        # biddings = BiddingModel.objects.filter(request=requests)
-        # # detailBidding = DetailBiddingModel.objects.filter(bidding=biddings)
-        # bidder = BiddingModel.bidder_set.get()
-        # detail_bid = BiddingModel.detail_bidding_set.all()
 
-        # listJson = {
-        #     "bidder": bidder,
+        # 이 뷰에서는 id, price, bidder
+        """1. request pk에 해당하는 requestModel을 가져와
+        2. 그 requestModeldms requests인데, 그게 BiddingModel의 request인 Bidding들 가져와
+        3. 그 Bidding들이 biddings인데, 얘랑 연결된 bidder, detailBidding들도 가져와. (_set으로 가져오렴)"""
+        requests = RequestModel.objects.get(id=pk)
+        biddings = BiddingModel.objects.filter(request=requests)
 
-        # }
+        a = json.dumps(list(biddings))
 
-        # a = json.dumps(list())
-
-        # """
-        # 1. serialize 다 해
-        # 2. json으로 한꺼번에 묶자
-        # 3. JsonResponse"""
-
-        # return JsonResponse()
-
-        pass
+        return JsonResponse({'biddings': a}, status=200)
 
 
 class specific_biddings(View):
-    pass
-
-# 코드 만지지 마세요
+    def get(self, request, *args, bpk):
+        """bpk의 값을 가진 BiddingModel의 object를 가져와"""
+        specific_bidding = BiddingModel.objects.get(id=bpk)
+        a = json.dumps(list(specific_bidding))
+        """없다면 메세지 출력하게 exists() 써서 if문 만들어."""
+        return JsonResponse({'bidding': a}, status=200)
