@@ -151,7 +151,7 @@ class Biddings(View):
 
 
 class specific_biddings(View):
-    def get(self, request, *args, bpk):
+    def get(self, request, *args, pk, bpk):
         """bpk의 값을 가진 BiddingModel의 object를 가져와"""
         specific_bidding = BiddingModel.objects.get(id=bpk)
         a = json.dumps(list(specific_bidding))
