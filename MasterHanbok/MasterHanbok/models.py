@@ -96,7 +96,7 @@ class Bidders(models.Model):
     store_name = models.CharField(max_length=15)
     phone_num = models.CharField(max_length=15)
     location = models.CharField(max_length=70)
-    store_image = models.CharField(max_length=70)
+    store_image = models.CharField(max_length=500, blank=True, null=True)
     introduce = models.CharField(max_length=70)
     objects = models.Manager()
 
@@ -108,13 +108,13 @@ class DetailBiddingModel(models.Model):
     price_and_discount = models.CharField(max_length=15)
     service_product = models.CharField(max_length=30)
     design = models.CharField(max_length=30)
-    design_images = ArrayField(models.CharField(max_length=70, default=''))
+    design_images = ArrayField(models.CharField(max_length=500, default=''))
     color = models.CharField(max_length=30)
-    color_images = ArrayField(models.CharField(max_length=70, default=''))
+    color_images = ArrayField(models.CharField(max_length=500, default=''))
     detail = models.CharField(max_length=70)
-    detail_images = ArrayField(models.CharField(max_length=70, default=''))
+    detail_images = ArrayField(models.CharField(max_length=500, default=''))
     note = models.CharField(max_length=70)
-    note_images = ArrayField(models.CharField(max_length=70, default=''))
+    note_images = ArrayField(models.CharField(max_length=500, default=''))
     objects = models.Manager()
 
     class Meta:
