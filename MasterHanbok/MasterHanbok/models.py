@@ -62,6 +62,9 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
         self.password = make_password(raw_password)
         self._password = raw_password
 
+    class Meta:
+        db_table = 'usermodel'
+
     # def __init__(self):
     #     self.nick_name = SignUpModel.nick_name
     #     self.phone_num = SignUpModel.phone_num
@@ -84,6 +87,9 @@ class RequestModel(models.Model):
             SignUpModel.objects.create(requested_user=instance)
 
     post_save.connect(create_requests, sender=requested_user)
+
+    class Meta:
+        db_table = 'requestmodel'
 
 
 class Bidders(models.Model):
