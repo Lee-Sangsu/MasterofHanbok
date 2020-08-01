@@ -71,7 +71,7 @@ class UserLoginAPIView(ObtainJSONWebToken):
                     return JsonResponse({'message': "비밀번호가 틀렸습니다!"}, status=401)
 
             else:
-                return JsonResponse({'message': "일치하는 그거가 없습니다"}, status=400)
+                return JsonResponse({'message': "일치하는 아이디가 없습니다"}, status=400)
         except KeyError:
             # 리턴해라 제이슨타입으로 {message:INVALID_KEYS}
             return JsonResponse({'mesaage': "INVALID_KEYS"}, status=400)
