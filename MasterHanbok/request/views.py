@@ -139,7 +139,7 @@ class Biddings(View):
     def get(self, request, pk):
         if RequestModel.objects.filter(id=pk).exists:
             requests = RequestModel.objects.get(id=pk)
-            biddings = BiddingModel.objects.filter(request=requests)
+            biddings = BiddingModel.objects.filter(request_id=requests.pk)
 
             a = json.dumps(list(biddings))
 
