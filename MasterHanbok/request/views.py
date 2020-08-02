@@ -136,7 +136,7 @@ class hanbokRequestView(View):
 
 class Biddings(View):
     @ login_decorator
-    def get(self, request, *args, pk):
+    def get(self, request, pk):
 
         # 이 뷰에서는 id, price, bidder
         """1. request pk에 해당하는 requestModel을 가져와
