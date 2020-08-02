@@ -137,17 +137,20 @@ class hanbokRequestView(View):
 class Biddings(View):
     @ login_decorator
     def get(self, request, pk):
+        if RequestModel.objects.filter(id=pk).exists:
+            requests = RequestModel.objects.get(id=pk)
+            biddings = BiddingModel.objects.filter(request=requests)
+
+            a = json.dumps(list(biddings))
+
+            return JsonResponse({'biddings': a}, status=200)
+        else:
+            return JsonResponse({'message': '해당 요청의 견적이 없습니다.'}, status=400)
 
         # 이 뷰에서는 id, price, bidder
         """1. request pk에 해당하는 requestModel을 가져와
         2. 그 requestModeldms requests인데, 그게 BiddingModel의 request인 Bidding들 가져와
         3. 그 Bidding들이 biddings인데, 얘랑 연결된 bidder, detailBidding들도 가져와. (_set으로 가져오렴)"""
-        requests = RequestModel.objects.get(id=pk)
-        biddings = BiddingModel.objects.filter(request=requests)
-
-        a = json.dumps(list(biddings))
-
-        return JsonResponse({'biddings': a}, status=200)
 
 
 class specific_biddings(View):
