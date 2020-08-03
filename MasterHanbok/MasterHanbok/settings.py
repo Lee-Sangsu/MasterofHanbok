@@ -113,7 +113,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'hsok_db',
         'USER': 'leesangsu',
-        'PASSWORD': '0000',
+        'PASSWORD': '0519',
         'HOST': 'localhost',
         'PORT': '5432',
     },
