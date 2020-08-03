@@ -158,6 +158,6 @@ class specific_biddings(View):
     def get(self, request, *args, pk, bpk):
         """bpk의 값을 가진 BiddingModel의 object를 가져와"""
         specific_bidding = BiddingModel.objects.get(id=bpk)
-        a = json.dumps(list(specific_bidding))
+        a = biddingJsonSerializer(biddings, many=False)
         """없다면 메세지 출력하게 exists() 써서 if문 만들어."""
-        return JsonResponse({'bidding': a}, status=200)
+        return JsonResponse({'bidding': a.data}, status=200)
