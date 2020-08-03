@@ -17,7 +17,7 @@ from django.db import IntegrityError
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
 from django.core.exceptions import ObjectDoesNotExist
-from MasterHanbok.serializer import requestJSONSerializer
+from MasterHanbok.serializer import biddingJsonSerializer
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 
@@ -140,8 +140,9 @@ class Biddings(View):
         if RequestModel.objects.filter(id=pk).exists:
             requests = RequestModel.objects.get(id=pk)
             biddings = BiddingModel.objects.filter(request_id=requests.pk)
+            a = biddingJsonSerializer(biddings, many=True)
 
-            a = json.dumps(list(biddings))
+            #a = json.dumps(list(biddings))
 
             return JsonResponse({'biddings': a}, status=200)
         else:
