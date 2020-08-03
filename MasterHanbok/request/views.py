@@ -135,7 +135,7 @@ class hanbokRequestView(View):
 
 
 class Biddings(View):
-    @ login_decorator
+    # @ login_decorator
     def get(self, request, pk):
         if RequestModel.objects.filter(id=pk).exists:
             requests = RequestModel.objects.get(id=pk)
