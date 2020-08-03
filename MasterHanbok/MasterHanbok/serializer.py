@@ -5,10 +5,10 @@ from django.db.models import Q
 
 
 class biddingJsonSerializer(serializers.ModelSerializer):
-    detail_requests = serializers.PrimaryKeyRelatedField(
+    detail_bidding = serializers.PrimaryKeyRelatedField(
         many=True, read_only=True)
     bidder = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
 
     class Meta():
         model = BiddingModel
-        fields = ['id', 'price', 'detail_requests', 'bidder']
+        fields = ['id', 'price', 'detail_bidding', 'bidder']
