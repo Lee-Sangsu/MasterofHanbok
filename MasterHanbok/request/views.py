@@ -144,7 +144,7 @@ class Biddings(View):
 
             #a = json.dumps(list(biddings))
 
-            return JsonResponse({'biddings': a}, status=200)
+            return JsonResponse({'biddings': a.data}, status=200)
         else:
             return JsonResponse({'message': '해당 요청의 견적이 없습니다.'}, status=400)
 
