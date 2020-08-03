@@ -1,5 +1,4 @@
 from django.db import models
-# Create your models here.
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
@@ -64,11 +63,6 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = 'usermodel'
-
-    # def __init__(self):
-    #     self.nick_name = SignUpModel.nick_name
-    #     self.phone_num = SignUpModel.phone_num
-    #     self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
 
 class RequestModel(models.Model):
