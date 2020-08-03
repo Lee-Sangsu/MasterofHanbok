@@ -18,7 +18,6 @@ from django.db import IntegrityError
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
 from django.core.exceptions import ObjectDoesNotExist
-from .serializer import requestJSONSerializer
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 
