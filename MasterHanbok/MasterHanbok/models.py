@@ -99,16 +99,16 @@ class Bidders(models.Model):
 
 
 class DetailBiddingModel(models.Model):
-    price_and_discount = models.CharField(max_length=15)
-    service_product = models.CharField(max_length=30)
-    design = models.CharField(max_length=30)
-    design_images = ArrayField(models.CharField(max_length=500, default=''))
-    color = models.CharField(max_length=30)
-    color_images = ArrayField(models.CharField(max_length=500, default=''))
-    detail = models.CharField(max_length=70)
-    detail_images = ArrayField(models.CharField(max_length=500, default=''))
-    note = models.CharField(max_length=70)
-    note_images = ArrayField(models.CharField(max_length=500, default=''))
+    price_and_discount = models.CharField(max_length=1000)
+    service_product = models.CharField(max_length=2000)
+    design = models.CharField(max_length=2000)
+    design_images = ArrayField(models.CharField(max_length=3000, default=''))
+    color = models.CharField(max_length=2000)
+    color_images = ArrayField(models.CharField(max_length=3000, default=''))
+    detail = models.CharField(max_length=2000)
+    detail_images = ArrayField(models.CharField(max_length=3000, default=''))
+    note = models.CharField(max_length=2000)
+    note_images = ArrayField(models.CharField(max_length=3000, default=''))
     objects = models.Manager()
 
     class Meta:
