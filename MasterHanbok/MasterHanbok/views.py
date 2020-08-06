@@ -62,7 +62,7 @@ class UserLoginAPIView(ObtainJSONWebToken):
                         {'id': user.id}, SECRET_KEY, algorithm="HS256").decode('utf-8')
                     nickname = user.nickname
 
-                    return JsonResponse({"token": token, "nickname": nickname, "user_id": user.pk}, status=200)
+                    return JsonResponse({"token": token, "nickname": nickname, "user_pk": user.pk}, status=200)
 
                 else:
 
