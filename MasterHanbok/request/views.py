@@ -137,7 +137,7 @@ class hanbokRequestView(View):
 class Biddings(View):
     # @ login_decorator
     def get(self, request, pk):
-        if RequestModel.objects.filter(id=pk).exists:
+        if BiddingModel.objects.filter(request_id=pk).exists():
             requests = RequestModel.objects.get(id=pk)
             biddings = BiddingModel.objects.filter(request_id=requests.pk)
             a = biddingJsonSerializer(biddings, many=True)
