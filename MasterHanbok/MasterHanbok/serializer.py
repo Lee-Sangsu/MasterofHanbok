@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import RequestModel, BiddingModel, DetailBiddingModel, Bidders
+from .models import RequestModel, BiddingModel, DetailBiddingModel, Bidders, SignUpModel
 from django.core.validators import ValidationError
 from django.db.models import Q
 
