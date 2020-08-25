@@ -53,21 +53,8 @@ class hanbokRequestView(View):
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.get(id=payload['id'])
 
-        # detailrequests = DetailRequestModel.objects.filter(request=requests)
-
         filterRequests = RequestModel.objects.filter(
             requested_user=user, ended_or_not=False).order_by('-id').values()
-
-        # serializedFilterRequest = json.loads(serialize(filterRequests)) or
-        # filterRequests.__dict__
-
-        # filterRequestsID = filterRequests['pk']
-
-        # getRequests = RequestModel.objects.get(
-        #     requested_user=user).oreder_by('-id')[0]
-
-        # serializedJSON = serializers.serialize('json', filterRequests, fields=(
-        #     'requested_user_id', 'end_date', 'detail_requests'))
 
         dumpJSON = json.dumps(list(filterRequests))
 
@@ -98,20 +85,6 @@ class hanbokRequestView(View):
 
         requestModel.save()
 
-        # det = data['detail_requests']
-
-        # for detail in det:
-        #     DetailRequestModel(
-        #         request_id=requestModel.pk,
-        #         person=detail['person'],
-        #         making_type=detail['making_type'],
-        #         age=detail['age'],
-        #         season=detail['season'],
-        #         # detail_image=result['detail_image'],
-        #         fabric=detail['fabric'],
-        #         memo=detail['memo'],
-        #     ).save
-
         return HttpResponse(status=200)
 
     @ login_decorator
@@ -123,12 +96,13 @@ class hanbokRequestView(View):
         user = SignUpModel.objects.get(id=payload['id'])
 
         end_date = data['end_date']
+        ended_or_not = data['ended_or_not']
 
         make_end_or_not = RequestModel.objects.get(
             requested_user=user, end_date=end_date)
 
         make_end_or_not.end_date = end_date
-        make_end_or_not.ended_or_not = True
+        make_end_or_not.ended_or_not = ended_or_not
         make_end_or_not.save()
 
         return HttpResponse(status=200)
