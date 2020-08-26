@@ -31,12 +31,12 @@ class UserRegisterAPIView(ObtainJSONWebToken):
     def post(self, request):
         try:
             hashd_password = bcrypt.hashpw(
-                request.data.get['password'].encode('utf-8'), bcrypt.gensalt())
+                request.data.get('password').encode('utf-8'), bcrypt.gensalt())
 
             user = SignUpModel(
-                user_id=request.data.get['user_id'],
-                nickname=request.data.get['nickname'],
-                phone_num=request.data.get['phone_num'],
+                user_id=request.data.get('user_id'),
+                nickname=request.data.get('nickname'),
+                phone_num=request.data.get('phone_num'),
                 password=hashd_password.decode('utf-8'),
             )
             user.save()
