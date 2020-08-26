@@ -95,13 +95,9 @@ def login_decorator(func):
 class DeleteUserView(View):
     @login_decorator
     def put(self, request, pk):
-        access_token = request.headers.get('Authorization', None)
-        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
-        user = SignUpModel.objects.get(id=payload['id'])
-
+        user = SignUpModel.objects.get(id=pk)
         user.user_id = 'null'
         user.password = 'null'
         user.phone_num = 'null'
-
         user.save()
         return HttpResponse(status=200)
