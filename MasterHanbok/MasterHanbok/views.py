@@ -30,12 +30,12 @@ jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 class UserRegisterAPIView(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             hashd_password = bcrypt.hashpw(
                 data['password'].encode('utf-8'), bcrypt.gensalt())
 
             user = SignUpModel(
-                user_id=data['user_id'],
+                user_id=data.get['user_id'],
                 nickname=data['nickname'],
                 phone_num=data['phone_num'],
                 password=hashd_password.decode('utf-8'),
@@ -48,7 +48,7 @@ class UserRegisterAPIView(ObtainJSONWebToken):
 
 class UserLoginAPIView(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
 
         try:
             if SignUpModel.objects.filter(user_id=data['user_id']).exists():
