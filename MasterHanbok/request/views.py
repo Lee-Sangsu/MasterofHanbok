@@ -62,6 +62,7 @@ class hanbokRequestView(View):
 
     @ login_decorator
     def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
 
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
@@ -72,9 +73,9 @@ class hanbokRequestView(View):
         2. json.body에서 'end_date', 'detail_request' 가져와 해당 token의 id를 가진 user의 RequestModel에 저장.
         """
 
-        end_date = request.data.get('end_date')
+        end_date = data['end_date']
 
-        json_detail_request = request.data.get('detail_requests')
+        json_detail_request = data['detail_requests']
 
         requestModel = RequestModel(
             requested_user=user,
