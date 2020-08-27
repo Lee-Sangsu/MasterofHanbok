@@ -56,7 +56,7 @@ class UserLoginAPIView(ObtainJSONWebToken):
                 user_password = user.password.encode('utf-8')
 
                 if user.del_or_not == True:
-                    return JsonResponse({'message': '탈퇴한 사용자입니다.'}, status=401)
+                    return JsonResponse({'message': 'deleted user'}, status=401)
 
                 elif user.del_or_not == False:
 
