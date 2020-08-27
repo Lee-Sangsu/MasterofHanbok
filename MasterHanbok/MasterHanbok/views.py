@@ -98,13 +98,9 @@ def login_decorator(func):
 class DeleteUserView(View):
     @login_decorator
     def put(self, request, pk):
-        try:
-            user = SignUpModel.objects.get(id=pk)
-            user.user_id = 'null'
-            user.password = 'null'
-            user.phone_num = 'null'
-            user.del_or_not = True
-            user.save()
-            return HttpResponse(status=200)
-        except:
-            return HttpResponse(status=405)
+        user = SignUpModel.objects.get(id=pk)
+        user.password = 'null'
+        user.phone_num = 'null'
+        user.del_or_not = True
+        user.save()
+        return HttpResponse(status=200)
