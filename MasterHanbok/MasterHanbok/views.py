@@ -46,16 +46,16 @@ class UserRegisterAPIView(ObtainJSONWebToken):
 
 
 class UserLoginAPIView(ObtainJSONWebToken):
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body.decode('utf-8'))
-
+    def post(self, request):
+        # data = json.loads(request.body.decode('utf-8'))
         try:
-            if SignUpModel.objects.filter(user_id=data['user_id']).exists():
+            if SignUpModel.objects.filter(user_id=request.data.get('user_id')).exists():
 
-                user = SignUpModel.objects.get(user_id=data['user_id'])
+                user = SignUpModel.objects.get(
+                    user_id=request.data.get('user_id'))
                 user_password = user.password.encode('utf-8')
 
-                if bcrypt.checkpw(data['password'].encode('utf-8'), user_password):
+                if bcrypt.checkpw(request.data.get('password').encode('utf-8'), user_password):
                     # 토큰발행
                     token = jwt.encode(
                         {'id': user.id}, SECRET_KEY, algorithm="HS256").decode('utf-8')

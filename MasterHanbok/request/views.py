@@ -41,7 +41,7 @@ def login_decorator(func):
 
 class hanbokRequestView(View):
     @login_decorator
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         """
         1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
         2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
@@ -61,9 +61,7 @@ class hanbokRequestView(View):
         return HttpResponse(dumpJSON, status=200)
 
     @ login_decorator
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-
+    def post(self, request):
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.get(id=payload['id'])
@@ -73,9 +71,9 @@ class hanbokRequestView(View):
         2. json.body에서 'end_date', 'detail_request' 가져와 해당 token의 id를 가진 user의 RequestModel에 저장.
         """
 
-        end_date = data['end_date']
+        end_date = request.data.get('end_date')
 
-        json_detail_request = data['detail_requests']
+        json_detail_request = request.data.get('detail_requests')
 
         requestModel = RequestModel(
             requested_user=user,
@@ -88,15 +86,14 @@ class hanbokRequestView(View):
         return HttpResponse(status=200)
 
     @ login_decorator
-    def put(self, request, *args, **kwargs):
-        data = json.loads(request.body)
+    def put(self, request):
 
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.get(id=payload['id'])
 
-        end_date = data['end_date']
-        ended_or_not = data['ended_or_not']
+        end_date = request.data.get('end_date')
+        ended_or_not = request.data.get('ended_or_not')
 
         make_end_or_not = RequestModel.objects.get(
             requested_user=user, end_date=end_date)
