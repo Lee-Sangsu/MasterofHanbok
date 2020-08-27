@@ -55,18 +55,21 @@ class UserLoginAPIView(ObtainJSONWebToken):
                     user_id=request.data.get('user_id'))
                 user_password = user.password.encode('utf-8')
 
-                if bcrypt.checkpw(request.data.get('password').encode('utf-8'), user_password):
-                    # 토큰발행
-                    token = jwt.encode(
-                        {'id': user.id}, SECRET_KEY, algorithm="HS256").decode('utf-8')
-                    nickname = user.nickname
+                if user.del_or_not == True:
+                    return JsonResponse({'message': '탈퇴한 사용자입니다.'}, status=401)
 
-                    return JsonResponse({"token": token, "nickname": nickname, "user_pk": user.pk, "phone_num": user.phone_num}, status=200)
+                elif user.del_or_not == False:
 
-                else:
+                    if bcrypt.checkpw(request.data.get('password').encode('utf-8'), user_password):
+                        # 토큰발행
+                        token = jwt.encode(
+                            {'id': user.id}, SECRET_KEY, algorithm="HS256").decode('utf-8')
+                        nickname = user.nickname
 
-                    # 리턴해라 제이슨타입으로 {'message : 비밀번호가 틀렸습니다 !}
-                    return JsonResponse({'message': "비밀번호가 틀렸습니다!"}, status=401)
+                        return JsonResponse({"token": token, "nickname": nickname, "user_pk": user.pk, "phone_num": user.phone_num}, status=200)
+
+                    else:
+                        return JsonResponse({'message': "비밀번호가 틀렸습니다!"}, status=401)
 
             else:
                 return JsonResponse({'message': "일치하는 아이디가 없습니다"}, status=400)
@@ -95,9 +98,13 @@ def login_decorator(func):
 class DeleteUserView(View):
     @login_decorator
     def put(self, request, pk):
-        user = SignUpModel.objects.get(id=pk)
-        user.user_id = 'null'
-        user.password = 'null'
-        user.phone_num = 'null'
-        user.save()
-        return HttpResponse(status=200)
+        try:
+            user = SignUpModel.objects.get(id=pk)
+            user.user_id = 'null'
+            user.password = 'null'
+            user.phone_num = 'null'
+            user.del_or_not = True
+            user.save()
+            return HttpResponse(status=200)
+        except:
+            return HttpResponse(status=405)

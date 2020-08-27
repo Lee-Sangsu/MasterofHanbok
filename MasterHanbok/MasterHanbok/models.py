@@ -41,7 +41,7 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
         max_length=50, default='', unique=True, verbose_name=('user_id'))
     nickname = models.CharField(max_length=40, default='')
     phone_num = models.CharField(max_length=15, default=None, null=False)
-    # requests = models.ForeignKey(RequestModel)
+    del_or_not = models.BooleanField(default=False)
     objects = UserManager()
     """
     manager 부분만 고치면 잘 되겄다 잘 고쳐서 잘 됐다 호호홍
