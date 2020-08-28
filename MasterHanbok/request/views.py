@@ -140,13 +140,13 @@ class specific_biddings(View):
 class Certification(View):
 
     @login_decorator
-    def get(self, request, bpk):
+    def get(self, request, pk, bpk):
         specific_bidding = BiddingModel.objects.get(id=bpk)
         b = certificationJsonSerializer(specific_bidding, many=False)
         return JsonResponse({'certification_arr': b.data}, status=200)
 
     @login_decorator
-    def post(self, request, bpk):
+    def post(self, request, pk, bpk):
         data = json.loads(request.body)
 
         certification = data['certification']
