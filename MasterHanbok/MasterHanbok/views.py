@@ -32,7 +32,7 @@ class UserRegisterAPIView(ObtainJSONWebToken):
         try:
             user_id = request.data.get('user_id')
 
-            if SignUpModel.objects.get(user_id=user_id).exists():
+            if SignUpModel.objects.filter(user_id=user_id).exists():
                 return JsonResponse({'message': 'already exist user_id'}, status=401)
 
             else:
