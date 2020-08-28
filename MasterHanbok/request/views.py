@@ -17,7 +17,7 @@ from django.db import IntegrityError
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
 from django.core.exceptions import ObjectDoesNotExist
-from MasterHanbok.serializer import biddingJsonSerializer
+from MasterHanbok.serializer import biddingJsonSerializer, certificationJsonSerializer
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 
@@ -135,3 +135,25 @@ class specific_biddings(View):
         a = biddingJsonSerializer(specific_bidding, many=False)
         """없다면 메세지 출력하게 exists() 써서 if문 만들어."""
         return JsonResponse({'bidding': a.data}, status=200)
+
+
+class Certification(View):
+
+    @login_decorator
+    def get(self, request, bpk):
+        specific_bidding = BiddingModel.objects.get(id=bpk)
+        b = certificationJsonSerializer(specific_bidding, many=False)
+        return JsonResponse({'certification_arr': b.data}, status=200)
+
+    @login_decorator
+    def post(self, request, bpk):
+        data = json.loads(request.body)
+
+        certification = data['certification']
+
+        requestModel = BiddingModel(
+            certification=certification,
+        )
+
+        requestModel.save()
+        return HttpResponse(status=200)

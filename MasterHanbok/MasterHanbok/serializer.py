@@ -26,3 +26,18 @@ class biddingJsonSerializer(serializers.ModelSerializer):
     class Meta:
         model = BiddingModel
         fields = ('id', 'price', 'detail_bidding', 'bidder')
+
+
+class certificationJsonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BiddingModel
+        fields = ('certification')
+
+
+# class certificationBiddingJsonSerializer(serializers.ModelSerializer):
+#     certification = certificationJsonSerializer(read_only=True)
+
+#     class Meta:
+#         model = BiddingModel
+#         fields = ('certification')

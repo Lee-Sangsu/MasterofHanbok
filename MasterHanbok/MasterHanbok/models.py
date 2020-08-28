@@ -115,6 +115,19 @@ class DetailBiddingModel(models.Model):
         db_table = 'detail_bid'
 
 
+# class CertificationModel(models.Model):
+#     date = models.CharField(max_length=100)
+#     store_num = models.CharField(max_length=100)
+#     store_name = models.CharField(max_length=100)
+#     nickname = models.CharField(max_length=100)
+#     price = models.CharField(max_length=100)
+#     request_id = models.OneToOneField(
+#         RequestModel, on_delete=models.SET_NULL, null=True)
+
+#     class Meta:
+#         db_table = 'certification'
+
+
 class BiddingModel(models.Model):
     bidder = models.ForeignKey(
         Bidders, on_delete=models.CASCADE, related_name='bidder')
@@ -122,6 +135,7 @@ class BiddingModel(models.Model):
     detail_bidding = models.OneToOneField(
         DetailBiddingModel, on_delete=models.SET_NULL, null=True)
     price = models.CharField(max_length=30)
+    certification = JSONField()
     objects = models.Manager()
 
     class Meta:
