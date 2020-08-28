@@ -135,7 +135,7 @@ class BiddingModel(models.Model):
     detail_bidding = models.OneToOneField(
         DetailBiddingModel, on_delete=models.SET_NULL, null=True)
     price = models.CharField(max_length=30)
-    certification = JSONField()
+    certification = JSONField(null=True)
     objects = models.Manager()
 
     class Meta:
