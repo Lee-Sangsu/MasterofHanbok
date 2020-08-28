@@ -133,7 +133,7 @@ class CertificationModel(models.Model):
     certificated_user = models.ForeignKey(
         SignUpModel, on_delete=models.CASCADE)
     request_id = models.OneToOneField(
-        RequestModel, on_delete=models.SET_NULL, null=False)
+        RequestModel, on_delete=models.CASCADE, null=False)
     bidding_id = models.OneToOneField(BiddingModel, on_delete=models.CASCADE)
 
     class Meta:
