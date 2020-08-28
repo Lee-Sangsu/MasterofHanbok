@@ -30,17 +30,23 @@ jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 class UserRegisterAPIView(ObtainJSONWebToken):
     def post(self, request):
         try:
-            hashd_password = bcrypt.hashpw(
-                request.data.get('password').encode('utf-8'), bcrypt.gensalt())
+            user_id = request.data.get('user_id')
 
-            user = SignUpModel(
-                user_id=request.data.get('user_id'),
-                nickname=request.data.get('nickname'),
-                phone_num=request.data.get('phone_num'),
-                password=hashd_password.decode('utf-8'),
-            )
-            user.save()
-            return JsonResponse({'message': "SUCCESS"}, status=200)
+            if SignUpModel.objects.get(user_id=user_id).exists():
+                return JsonResponse({'message': 'already exist user_id'}, status=401)
+
+            else:
+                hashd_password = bcrypt.hashpw(
+                    request.data.get('password').encode('utf-8'), bcrypt.gensalt())
+
+                user = SignUpModel(
+                    user_id=user_id,
+                    nickname=request.data.get('nickname'),
+                    phone_num=request.data.get('phone_num'),
+                    password=hashd_password.decode('utf-8'),
+                )
+                user.save()
+                return JsonResponse({'message': "SUCCESS"}, status=200)
         except KeyError:
             return JsonResponse({'message': "INVALID_KEYS"}, status=400)
 
