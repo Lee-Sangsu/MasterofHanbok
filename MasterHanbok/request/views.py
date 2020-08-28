@@ -1,4 +1,4 @@
-from MasterHanbok.models import SignUpModel, RequestModel, Bidders, BiddingModel, DetailBiddingModel
+from MasterHanbok.models import SignUpModel, RequestModel, Bidders, BiddingModel, DetailBiddingModel, CertificationModel
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
@@ -141,18 +141,30 @@ class Certification(View):
 
     @login_decorator
     def get(self, request, pk, bpk):
-        specific_bidding = BiddingModel.objects.get(id=bpk)
-        b = certificationJsonSerializer(specific_bidding, many=False)
+        access_token = request.headers.get('Authorization', None)
+        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
+        user = SignUpModel.objects.get(id=payload['id'])
+
+        certifications = CertificationModel.objects.filter(
+            certificated_user=user)
+
+        b = certificationJsonSerializer(certifications, many=True)
         return JsonResponse({'certification_arr': b.data}, status=200)
 
     @login_decorator
     def post(self, request, pk, bpk):
         data = json.loads(request.body)
+        access_token = request.headers.get('Authorization', None)
+        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
+        user = SignUpModel.objects.get(id=payload['id'])
 
         certification = data['certification']
 
         requestModel = BiddingModel(
+            certificated_user=user,
             certification=certification,
+            request_id=pk,
+            bidding_id=bpk
         )
 
         requestModel.save()

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import RequestModel, BiddingModel, DetailBiddingModel, Bidders, SignUpModel
+from .models import RequestModel, BiddingModel, DetailBiddingModel, Bidders, SignUpModel, CertificationModel
 from django.core.validators import ValidationError
 from django.db.models import Q
 
@@ -31,8 +31,8 @@ class biddingJsonSerializer(serializers.ModelSerializer):
 class certificationJsonSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = BiddingModel
-        fields = ('certification',)
+        model = CertificationModel
+        fields = ('__all__',)
 
 
 # class certificationBiddingJsonSerializer(serializers.ModelSerializer):
