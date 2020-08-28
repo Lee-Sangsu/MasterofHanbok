@@ -32,7 +32,7 @@ class certificationJsonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BiddingModel
-        fields = ('certification')
+        fields = ('certification',)
 
 
 # class certificationBiddingJsonSerializer(serializers.ModelSerializer):
