@@ -155,7 +155,7 @@ class Certification(View):
             return JsonResponse({'message': '견적서가 없습니다.'}, status=400)
 
     @login_decorator
-    def post(self, request):
+    def post(self, request, pk, bpk):
         data = json.loads(request.body)
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
