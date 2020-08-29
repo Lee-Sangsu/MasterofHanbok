@@ -140,7 +140,7 @@ class specific_biddings(View):
 class Certification(View):
 
     @login_decorator
-    def get(self, request, pk, bpk):
+    def get(self, request):
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.get(id=payload['id'])
@@ -155,7 +155,7 @@ class Certification(View):
             return JsonResponse({'message': '견적서가 없습니다.'}, status=400)
 
     @login_decorator
-    def post(self, request, pk, bpk):
+    def post(self, request):
         data = json.loads(request.body)
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
