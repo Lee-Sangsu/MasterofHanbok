@@ -145,11 +145,14 @@ class Certification(View):
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.get(id=payload['id'])
 
-        certifications = CertificationModel.objects.filter(
-            certificated_user=user)
+        if CertificationModel.objects.filter(certificated_user=user).exists():
+            certifications = CertificationModel.objects.filter(
+                certificated_user=user)
+            b = certificationJsonSerializer(certifications, many=True)
+            return JsonResponse({'certification_arr': b}, status=200)
 
-        b = certificationJsonSerializer(certifications, many=True)
-        return JsonResponse({'certification_arr': b.data}, status=200)
+        else:
+            return JsonResponse({'message': '견적서가 없습니다.'}, status=400)
 
     @login_decorator
     def post(self, request, pk, bpk):
