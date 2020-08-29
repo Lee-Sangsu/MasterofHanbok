@@ -137,7 +137,7 @@ class specific_biddings(View):
         return JsonResponse({'bidding': a.data}, status=200)
 
 
-class Certification(View):
+class Certification(APIView):
 
     @login_decorator
     def get(self, request, pk, bpk):
@@ -149,7 +149,7 @@ class Certification(View):
             certifications = CertificationModel.objects.filter(
                 certificated_user=user)
             b = certificationJsonSerializer(certifications, many=True)
-            return JsonResponse({'certification_arr': b}, status=200)
+            return Response(b.data)
 
         else:
             return JsonResponse({'message': '견적서가 없습니다.'}, status=400)
