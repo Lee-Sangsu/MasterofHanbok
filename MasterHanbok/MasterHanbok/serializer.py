@@ -32,5 +32,5 @@ class UserRequestIDSerializer(serializers.ModelSerializer):
     # request_id = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
-        model = RequestModel
-        fields = ('id')
+        model = SignUpModel
+        fields = ('certification')

@@ -149,3 +149,16 @@ class Certification(View):
             requested_user=user)
         b = UserRequestIDSerializer(request_ids, many=True)
         return JsonResponse({'certification': b.data}, status=200)
+
+    @login_decorator
+    def post(self, request):
+        data = json.loads(request.body)
+
+        access_token = request.headers.get('Authorization', None)
+        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
+        user = SignUpModel(
+            id=payload['id'],
+            certification=data['certification']
+        )
+        user.save()
+        return HttpResponse(status=200)
