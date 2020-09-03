@@ -144,8 +144,8 @@ class Certification(View):
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.filter(id=payload['id'])
-        b = UserRequestIDSerializer(user, many=True)
-        return Response(data=b, status=200)
+        b = UserRequestIDSerializer(user, many=False)
+        return JsonResponse(data=b.data, status=200)
 
     @login_decorator
     def post(self, request):
