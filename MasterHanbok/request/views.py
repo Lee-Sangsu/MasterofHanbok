@@ -143,7 +143,7 @@ class Certification(View):
     def get(self, request):
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
-        user = SignUpModel.objects.get(id=payload['id'])
+        user = SignUpModel.objects.filter(id=payload['id'])
         b = UserRequestIDSerializer(user, many=True)
         return JsonResponse({'certification': b.data}, status=200)
 
