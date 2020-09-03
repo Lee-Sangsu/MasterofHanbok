@@ -42,7 +42,7 @@ class SignUpModel(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(max_length=40, default='')
     phone_num = models.CharField(max_length=15, default=None, null=False)
     del_or_not = models.BooleanField(default=False)
-    certification = ArrayField(models.IntegerField(null=True))
+    certification = ArrayField(models.IntegerField(null=True), null=True)
     objects = UserManager()
     """
     manager 부분만 고치면 잘 되겄다 잘 고쳐서 잘 됐다 호호홍
