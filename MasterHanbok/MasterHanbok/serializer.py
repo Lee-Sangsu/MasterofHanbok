@@ -33,4 +33,4 @@ class UserRequestIDSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SignUpModel
-        fields = ('certification')
+        fields = ('certification',)
