@@ -156,9 +156,8 @@ class Certification(View):
 
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
-        user = SignUpModel(
-            id=payload['id'],
-            certification=data['certification']
-        )
+        user = SignUpModel.objects.get(id=payload['id'])
+
+        user.certification = data['certification']
         user.save()
         return HttpResponse(status=200)
