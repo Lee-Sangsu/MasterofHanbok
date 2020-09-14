@@ -105,6 +105,7 @@ class DeleteUserView(View):
     @login_decorator
     def put(self, request, pk):
         user = SignUpModel.objects.get(id=pk)
+        user.user_id = 'null'
         user.password = 'null'
         user.phone_num = 'null'
         user.del_or_not = True
