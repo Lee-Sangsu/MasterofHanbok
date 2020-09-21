@@ -50,7 +50,7 @@ class hanbokRequestView(View):
             requested_user=user, ended_or_not=False).order_by('-id').values()
 
         dumpJSON = json.dumps(list(filterRequests))
-        count_dumpedJSON = dumpJSON.count()
+        count_dumpedJSON = filterRequests.count()
         return JsonResponse({'requests': dumpJSON, 'count': count_dumpedJSON}, status=200)
 
     @ login_decorator
