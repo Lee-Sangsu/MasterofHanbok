@@ -42,13 +42,6 @@ def login_decorator(func):
 class hanbokRequestView(View):
     @login_decorator
     def get(self, request, *args, **kwargs):
-        """
-        1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
-        2. 해당 user의 RequestModel을 filter구문으로 뽑아와 = request
-        3. Json으로 출력하는데, 형식은 post로 받은 형식과 같음.
-        4. detailreuqest objects get pk해놓고 request array에 append해.
-        """
-
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.get(id=payload['id'])
@@ -57,24 +50,16 @@ class hanbokRequestView(View):
             requested_user=user, ended_or_not=False).order_by('-id').values()
 
         dumpJSON = json.dumps(list(filterRequests))
-
-        return HttpResponse(dumpJSON, status=200)
+        count_dumpedJSON = dumpJSON.count()
+        return JsonResponse({'requests': dumpJSON, 'count': count_dumpedJSON}, status=200)
 
     @ login_decorator
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user = SignUpModel.objects.get(id=payload['id'])
-
-        """
-        1. signupmodel에 id=payload['id']인 유저의 objects는 user라는 method.
-        2. json.body에서 'end_date', 'detail_request' 가져와 해당 token의 id를 가진 user의 RequestModel에 저장.
-        """
-
         end_date = data['end_date']
-
         json_detail_request = data['detail_requests']
 
         requestModel = RequestModel(
@@ -82,9 +67,7 @@ class hanbokRequestView(View):
             end_date=end_date,
             detail_requests=json_detail_request,
         )
-
         requestModel.save()
-
         return HttpResponse(status=200)
 
     @ login_decorator
@@ -115,27 +98,15 @@ class Biddings(View):
             requests = RequestModel.objects.get(id=pk)
             biddings = BiddingModel.objects.filter(request_id=requests.pk)
             a = biddingJsonSerializer(biddings, many=True)
-
-            biddingCount = biddings.count()
-
-            #a = json.dumps(list(biddings))
-
-            return JsonResponse({'biddings': a.data, 'count': biddingCount}, status=200)
+            return JsonResponse({'biddings': a.data}, status=200)
         else:
             return JsonResponse({'message': '해당 요청의 견적이 없습니다.'}, status=400)
-
-        # 이 뷰에서는 id, price, bidder
-        """1. request pk에 해당하는 requestModel을 가져와
-        2. 그 requestModeldms requests인데, 그게 BiddingModel의 request인 Bidding들 가져와
-        3. 그 Bidding들이 biddings인데, 얘랑 연결된 bidder, detailBidding들도 가져와. (_set으로 가져오렴)"""
 
 
 class specific_biddings(View):
     def get(self, request, *args, pk, bpk):
-        """bpk의 값을 가진 BiddingModel의 object를 가져와"""
         specific_bidding = BiddingModel.objects.get(id=bpk)
         a = biddingJsonSerializer(specific_bidding, many=False)
-        """없다면 메세지 출력하게 exists() 써서 if문 만들어."""
         return JsonResponse({'bidding': a.data}, status=200)
 
 
