@@ -116,9 +116,11 @@ class Biddings(View):
             biddings = BiddingModel.objects.filter(request_id=requests.pk)
             a = biddingJsonSerializer(biddings, many=True)
 
+            biddingCount = biddings.count()
+
             #a = json.dumps(list(biddings))
 
-            return JsonResponse({'biddings': a.data}, status=200)
+            return JsonResponse({'biddings': a.data, 'count': biddingCount}, status=200)
         else:
             return JsonResponse({'message': '해당 요청의 견적이 없습니다.'}, status=400)
 
