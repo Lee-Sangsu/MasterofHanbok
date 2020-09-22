@@ -114,13 +114,14 @@ class DeleteUserView(View):
 
 class PushNotificationView(View):
     def post(self, request, *args, **kwar):
+        data = json.loads(request.body)
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user_id = SignUpModel.objects.get(id=payload['id']).user_id
 
         device = APNSDevice(
             user_id=user_id,
-            registration_id=request.data.get('device_token')
+            registration_id=data['device_token']
         )
         device.save()
         return HttpResponse(status=200)
