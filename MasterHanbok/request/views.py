@@ -20,7 +20,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from MasterHanbok.serializer import biddingJsonSerializer, UserRequestIDSerializer
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
-from django.db.models import F
+from django.db.models import F, Count
 
 
 def login_decorator(func):
@@ -48,7 +48,7 @@ class hanbokRequestView(View):
         user = SignUpModel.objects.get(id=payload['id'])
 
         filterRequests = RequestModel.objects.filter(
-            requested_user=user, ended_or_not=False).order_by('-id').annotate(bidding_count=F('bidding')).values()
+            requested_user=user, ended_or_not=False).order_by('-id').annotate(bidding_count=Count(F('bidding'))).values()
         dumpJSON = json.dumps(list(filterRequests))
         return HttpResponse(dumpJSON, status=200)
 
