@@ -50,8 +50,7 @@ class hanbokRequestView(View):
             requested_user=user, ended_or_not=False).order_by('-id').values()
 
         dumpJSON = json.dumps(list(filterRequests))
-        count_dumpedJSON = filterRequests.count()
-        return JsonResponse({'requests': dumpJSON, 'count': count_dumpedJSON}, status=200)
+        return HttpResponse(dumpJSON, status=200)
 
     @ login_decorator
     def post(self, request, *args, **kwargs):

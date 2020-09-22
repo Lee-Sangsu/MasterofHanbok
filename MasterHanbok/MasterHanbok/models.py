@@ -119,7 +119,8 @@ class DetailBiddingModel(models.Model):
 class BiddingModel(models.Model):
     bidder = models.ForeignKey(
         Bidders, on_delete=models.CASCADE, related_name='bidder')
-    request = models.ForeignKey(RequestModel, on_delete=models.CASCADE)
+    request = models.ForeignKey(
+        RequestModel, on_delete=models.CASCADE, related_name='bidding')
     detail_bidding = models.OneToOneField(
         DetailBiddingModel, on_delete=models.SET_NULL, null=True)
     price = models.CharField(max_length=30)
