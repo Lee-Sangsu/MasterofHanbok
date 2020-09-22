@@ -20,7 +20,7 @@ from rest_framework_jwt.settings import api_settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
-
+from push-notifications.models import APNSDevice
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -110,3 +110,25 @@ class DeleteUserView(View):
         user.del_or_not = True
         user.save()
         return HttpResponse(status=200)
+
+
+class PushNotificationView(View):
+    def post(self, request, *args, **kwar):
+        access_token = request.headers.get('Authorization', None)
+        payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
+        user_id = SignUpModel.objects.get(id=payload['id']).user_id
+        data = request.data.get
+
+        device = APNSDevice(
+            user_id=user_id,
+            registration_id=apns_token
+        )
+        device.save()
+        return HttpResponse(status=200)
+
+        # device.send_message("You've got mail") # Alert message may only be sent as text.
+        # device.send_message(None, badge=5) # No alerts but with badge.
+        # device.send_message(None, content_available=1, extra={"foo": "bar"}) # Silent message with custom data.
+        # # alert with title and body.
+        # device.send_message(message={"title" : "Game Request", "body" : "Bob wants to play poker"}, extra={"foo": "bar"})
+        # device.send_message("Hello again", thread_id="123", extra={"foo": "bar"})
