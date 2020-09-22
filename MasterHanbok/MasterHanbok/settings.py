@@ -41,8 +41,18 @@ INSTALLED_APPS = [
     'MasterHanbok',
     'rest_framework',
     'rest_framework.authtoken',
-    'request'
+    'request',
+    'push_notifications'
 ]
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        'APNS_AUTH_KEY_PATH': "/srv/MasterofHanbok/MasterHanbok/AuthKey_6Z54A9AS99.p8",
+        "APNS_AUTH_KEY_ID": "6Z54A9AS99",
+        "APNS_TEAM_ID":"4QG3GC35LA",
+        "APNS_TOPIC":"com.codershigh.HanDdam",
+        "APNS_USE_ALTERNATIVE_PORT": "2197",
+        "APNS_USE_SANDBOX": False
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
