@@ -20,7 +20,7 @@ from rest_framework_jwt.settings import api_settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
-from push-notifications.models import APNSDevice
+from push_notifications.models import APNSDevice
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
