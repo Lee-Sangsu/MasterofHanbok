@@ -121,7 +121,7 @@ class PushNotificationView(View):
 
         device = APNSDevice(
             user_id=user_pk,
-            registration_id=data['device_token']
+            device_id=data['device_token']
         )
         device.save()
         return HttpResponse(status=200)
