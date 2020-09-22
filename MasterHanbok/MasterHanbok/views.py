@@ -117,11 +117,10 @@ class PushNotificationView(View):
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user_id = SignUpModel.objects.get(id=payload['id']).user_id
-        data = request.data.get
 
         device = APNSDevice(
             user_id=user_id,
-            registration_id=apns_token
+            registration_id=request.data.get('device_token')
         )
         device.save()
         return HttpResponse(status=200)
