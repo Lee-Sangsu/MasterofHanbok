@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'request',
-    'push_notifications'
+    'push_notifications',
+    'events'
 ]
 
 PUSH_NOTIFICATIONS_SETTINGS = {
