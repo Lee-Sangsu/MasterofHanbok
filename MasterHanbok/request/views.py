@@ -90,8 +90,24 @@ class hanbokRequestView(View):
 
         return HttpResponse(status=200)
 
-# class DetailBiddings(View):
-#     def post()
+
+class DetailBiddings(View):
+    def post(self, request, pk):
+        data = json.loads(request.body)
+        detail_bid = DetailBiddingModel(
+            price_and_discount=data['price_and_discount'],
+            service_product=data['service_product'],
+            design=data['design'],
+            design_images=data['design_images'],
+            color=data['color'],
+            color_images=data['color_images'],
+            detail=data['detail'],
+            detail_images=data['detail_images'],
+            note=data['note'],
+            note_images=data['note_images']
+        )
+        detail_bid.save()
+        return HttpResponse(status=200)
 
 
 class Biddings(View):
@@ -110,27 +126,14 @@ class Biddings(View):
 
         if RequestModel.objects.filter(id=pk).exists():
             request = RequestModel.objects.get(id=pk)
-            detail_bid = DetailBiddingModel(
-                price_and_discount=data['price_and_discount'],
-                service_product=data['service_product'],
-                design=data['design'],
-                design_images=data['design_images'],
-                color=data['color'],
-                color_images=data['color_images'],
-                detail=data['detail'],
-                detail_images=data['detail_images'],
-                note=data['note'],
-                note_images=data['note_images']
-            )
-            detail_bid.save()
 
-            bidder = Bidders.objects.get(id=data['bidder']).pk
+            detail_bid = DetailBiddingModel.objects.get(id=data['detail_bid'])
+            bidder = Bidders.objects.get(id=data['bidder'])
             bidding = BiddingModel(
                 request=request,
                 bidder=bidder,
                 price=data['price'],
-                detail_bidding=DetailBiddingModel.objects.get(
-                    price_and_discount=detail_bid.pk)
+                detail_bidding=detail_bid
             )
             bidding.save()
             # if APNSDevice.objects.get(user_id=request.requested_user).exists():
