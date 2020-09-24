@@ -128,10 +128,10 @@ class Biddings(View):
             request = RequestModel.objects.get(id=pk)
             bidding = BiddingModel(
                 request=request,
-                bidder=Bidders.objects.get(id=data['bidder']),
+                bidder=get_object_or_404(Bidders, id=data['bidder']),
                 price=data['price'],
-                detail_bidding=DetailBiddingModel.objects.get(
-                    id=data['detail_bid'])
+                detail_bidding=get_object_or_404(
+                    DetailBiddingModel, id=data['detail_bid'])
             )
             bidding.save()
             # if APNSDevice.objects.filter(user_id=request.requested_user).exists():
