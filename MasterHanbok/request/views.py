@@ -120,9 +120,10 @@ class Biddings(View):
                 note_images=data['note_images']
             )
             detail_bid.save()
+            bidder = Bidders.objects.get(id=data['bidder'])
             bidding = BiddingModel(
                 request=request,
-                bidder=data['bidder'],
+                bidder=bidder,
                 price=data['price'],
                 detail_bidding=detail_bid.pk
             )
