@@ -119,15 +119,15 @@ class PushNotificationView(View):
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user_pk = SignUpModel.objects.get(id=payload['id']).pk
 
-        if APNSDevice.objects.filter(user_id=user_pk).exists:
-            return JsonResponse({'message': '해당 사용자가 이미 있습니다.'}, status=400)
-        else:
+        if APNSDevice.DoesNotExist:
             device = APNSDevice(
                 user_id=user_pk,
                 registration_id=data['device_token']
             )
             device.save()
             return HttpResponse(status=200)
+        elif APNSDevice.objects.filter(user_id=user_pk).exists:
+            return JsosnResponse({'message': '해당 사용자가 이미 있습니다.'}, status=400)
 
         # device.send_message("You've got mail") # Alert message may only be sent as text.
         # device.send_message(None, badge=5) # No alerts but with badge.
