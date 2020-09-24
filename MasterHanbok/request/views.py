@@ -124,7 +124,7 @@ class Biddings(View):
     def post(self, request, pk):
         data = json.loads(request.body)
 
-        if RequestModel.objects.get(id=pk).exists():
+        if RequestModel.objects.filter(id=pk).exists():
             bidding = BiddingModel(
                 request=RequestModel.objects.get(id=pk),
                 bidder=Bidders.objects.get(id=data['bidder']),
