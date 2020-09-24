@@ -127,7 +127,7 @@ class PushNotificationView(View):
             device.save()
             return HttpResponse(status=200)
         elif APNSDevice.objects.filter(user_id=user_pk).exists():
-            return JsosnResponse({'message': '해당 사용자가 이미 있습니다.'}, status=400)
+            return JsonResponse({'message': '해당 사용자가 이미 있습니다.'}, status=400)
 
         # device.send_message("You've got mail") # Alert message may only be sent as text.
         # device.send_message(None, badge=5) # No alerts but with badge.
