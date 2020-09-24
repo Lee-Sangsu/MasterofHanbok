@@ -135,7 +135,7 @@ class Biddings(View):
             )
             bidding.save()
             # if APNSDevice.objects.filter(user_id=request.requested_user).exists():
-            device = APNSDevice.objects.get(user=request.requested_user)
+            device = APNSDevice.objects.filter(user=request.requested_user)
             device.send_message(
                 {"aps": {"alert": "응답견적이 도착했습니다", "badge": 0, "sound": "default"}})
             return HttpResponse(status=200)
