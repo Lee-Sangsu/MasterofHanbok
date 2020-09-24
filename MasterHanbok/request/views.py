@@ -124,7 +124,7 @@ class Biddings(View):
                 request=request,
                 bidder=data['bidder'],
                 price=data['price'],
-                detail_bidding=detail_bid
+                detail_bidding=detail_bid.pk
             )
             bidding.save()
             # if APNSDevice.objects.get(user_id=request.requested_user).exists():
