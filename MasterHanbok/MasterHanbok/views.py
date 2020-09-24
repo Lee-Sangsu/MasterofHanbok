@@ -119,7 +119,7 @@ class PushNotificationView(View):
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
         user_pk = SignUpModel.objects.get(id=payload['id']).pk
 
-        if APNSDevice.objects.get(user_id=user_pk).exists:
+        if APNSDevice.objects.filter(user_id=user_pk).exists:
             return JsonResponse({'message': '해당 사용자가 이미 있습니다.'}, status=400)
         else:
             device = APNSDevice(
