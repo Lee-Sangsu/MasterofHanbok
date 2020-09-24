@@ -90,6 +90,9 @@ class hanbokRequestView(View):
 
         return HttpResponse(status=200)
 
+# class DetailBiddings(View):
+#     def post()
+
 
 class Biddings(View):
     # @ login_decorator
@@ -120,12 +123,14 @@ class Biddings(View):
                 note_images=data['note_images']
             )
             detail_bid.save()
-            bidder = Bidders.objects.get(id=data['bidder'])
+
+            bidder = Bidders.objects.get(id=data['bidder']).pk
             bidding = BiddingModel(
                 request=request,
                 bidder=bidder,
                 price=data['price'],
-                detail_bidding=detail_bid.pk
+                detail_bidding=DetailBiddingModel.objects.get(
+                    price_and_discount=detail_bid.pk)
             )
             bidding.save()
             # if APNSDevice.objects.get(user_id=request.requested_user).exists():
