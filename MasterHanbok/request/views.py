@@ -136,8 +136,7 @@ class Biddings(View):
             bidding.save()
             # if APNSDevice.objects.filter(user_id=request.requested_user).exists():
             device = APNSDevice.objects.filter(user=request.requested_user)
-            device.send_message(
-                {"aps": {"alert": "응답견적이 도착했습니다", "badge": 0, "sound": "default"}})
+            device.send_message("응답견적이 도착했습니다", badge=0, sound="default")
             return HttpResponse(status=200)
             # else:
             #     return NotificationError(Exception)
@@ -153,7 +152,7 @@ class specific_biddings(View):
 
 
 class Certification(View):
-    @login_decorator
+    @ login_decorator
     def get(self, request):
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
@@ -161,7 +160,7 @@ class Certification(View):
         b = UserRequestIDSerializer(user, many=True)
         return JsonResponse(b.data, status=200, safe=False)
 
-    @login_decorator
+    @ login_decorator
     def post(self, request):
         data = json.loads(request.body)
 
