@@ -107,11 +107,24 @@ class Biddings(View):
 
         if RequestModel.objects.filter(id=pk).exists():
             request = RequestModel.objects.get(id=pk)
+            detail_bid = DetailBiddingModel(
+                price_and_discount=data['price_and_discount'],
+                service_product=data['service_product'],
+                design=data['design'],
+                design_images=data['design_images'],
+                color=data['color'],
+                color_images=data['color_images'],
+                detail=data['detail'],
+                detail_images=data['detail_images'],
+                note=data['note'],
+                note_images=data['note_images']
+            )
+            detail_bid.save()
             bidding = BiddingModel(
                 request=request,
                 bidder=data['bidder'],
                 price=data['price'],
-                detail_bidding=data['detail_bidding']
+                detail_bidding=detail_bid
             )
             bidding.save()
             # if APNSDevice.objects.get(user_id=request.requested_user).exists():
@@ -134,7 +147,6 @@ class specific_biddings(View):
 
 
 class Certification(View):
-
     @login_decorator
     def get(self, request):
         access_token = request.headers.get('Authorization', None)
