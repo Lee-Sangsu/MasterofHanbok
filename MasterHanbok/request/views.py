@@ -21,6 +21,7 @@ from MasterHanbok.serializer import biddingJsonSerializer, UserRequestIDSerializ
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from django.db.models import F, Count
+from push_notifications.models import APNSDevice
 
 
 def login_decorator(func):
@@ -100,6 +101,29 @@ class Biddings(View):
             return JsonResponse({'biddings': a.data}, status=200)
         else:
             return JsonResponse({'message': '해당 요청의 견적이 없습니다.'}, status=400)
+
+    def post(self, request, pk):
+        data = json.loads(request.body)
+
+        if RequestModel.objects.filter(id=pk).exists():
+            request = RequestModel.objects.get(id=pk)
+            bidding = BiddingModel(
+                request=request,
+                bidder=data['bidder'],
+                price=data['price'],
+                detail_bidding=data['detail_bidding']
+            )
+            bidding.save()
+            # if APNSDevice.objects.get(user_id=request.requested_user).exists():
+            device = APNSDevice.objects.get(user_id=request.requested_user)
+            device.send_message(
+                {"aps": {"alert": "응답견적이 도착했습니다", "badge": 0, "sound": "default"}})
+            return HttpResponse(status=200)
+            # else:
+            #     return NotificationError(Exception)
+        else:
+            return JsonResponse({'message': '해당 견적 요청이 유효하지 않습니다.'}, status=200)
+    '''bid, detail_bid 저장, 다른 endpoint에 bidder 저장시킬 수 있게 하기, 호비도 써야항게, 저장되는 순간 push 발송.'''
 
 
 class specific_biddings(View):
