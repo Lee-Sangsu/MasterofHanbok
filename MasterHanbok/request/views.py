@@ -135,9 +135,9 @@ class Biddings(View):
             )
             bidding.save()
 
-            apns_token = request.requested_user.push_notifications_apnsdevice_set.registration_id
+            # apns_token = request.requested_user.push_notifications_apnsdevice_set.registration_id
 
-            devices = APNSDevice.objects.get(registration_id=apns_token)
+            devices = APNSDevice.objects.get(user=request.requested_user)
             return HttpResponse(devices.send_message("응답견적이 도착했습니다", badge=0, sound="default"), status=200)
             # else:
             #     return NotificationError(Exception)

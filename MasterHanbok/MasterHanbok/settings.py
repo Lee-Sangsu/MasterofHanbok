@@ -47,6 +47,9 @@ INSTALLED_APPS = [
 ]
 
 PUSH_NOTIFICATIONS_SETTINGS = {
+    'USER_MODEL': 'MasterHanbok.SignUpModel',
+    'UPDATE_ON_DUPLICATE_REG_ID': False,
+    'UNIQUE_REG_ID': True,
     'APNS_AUTH_KEY_PATH': "/srv/MasterofHanbok/MasterHanbok/AuthKey_6Z54A9AS99.p8",
     "APNS_AUTH_KEY_ID": "6Z54A9AS99",
     "APNS_TEAM_ID": "4QG3GC35LA",
