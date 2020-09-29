@@ -52,7 +52,7 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     "APNS_TEAM_ID": "4QG3GC35LA",
     "APNS_TOPIC": "com.codershigh.HanDdam",
     "APNS_USE_ALTERNATIVE_PORT": "2197",
-    "APNS_USE_SANDBOX": False
+    "APNS_USE_SANDBOX": "api.development.push.apple.com"
 }
 
 MIDDLEWARE = [
