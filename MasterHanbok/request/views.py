@@ -17,7 +17,7 @@ from django.db import IntegrityError
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework_jwt.settings import api_settings
 from django.core.exceptions import ObjectDoesNotExist
-from MasterHanbok.serializer import biddingJsonSerializer, UserRequestIDSerializer
+from MasterHanbok.serializer import biddingJsonSerializer, UserRequestIDSerializer, BidderRequstSerializer
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from django.db.models import F, Count
@@ -108,6 +108,24 @@ class DetailBiddings(View):
         )
         detail_bid.save()
         return HttpResponse(status=200)
+
+
+class AnsweredRequests(View):
+    def get(self, request, pk):
+        bidder = Bidders.objects.get(id=pk)
+        biddings = BiddingModel.objects.filter(bidder=bidder)
+        requests = biddings.request.all()
+        serialzer = BidderRequstSerializer(requests, many=True)
+        return HttpResponse(serialzer, status=200)
+
+
+class UnansweredRequests(View):
+    def get(self, request, pk):
+        bidder = Bidders.objects.get(id=pk)
+        biddings = BiddingModel.objects.filter(bidder=bidder)
+        requests = RequestModel.objects.all().exclude(bidding=biddings)
+        serialzer = BidderRequstSerializer(requests, many=True)
+        return HttpResponse(serialzer, status=200)
 
 
 class Biddings(View):

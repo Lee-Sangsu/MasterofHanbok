@@ -2,16 +2,13 @@ from .models import SignUpModel, RequestModel
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
-from django.forms import model_to_dict
 from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from rest_framework.permissions import AllowAny
 import time
 import json
 import jwt
-# import requests
 import bcrypt
 from MasterHanbok.settings import SECRET_KEY
 from django.db import IntegrityError
@@ -21,6 +18,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from push_notifications.models import APNSDevice
+from .models import Bidders
+
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -113,7 +112,7 @@ class DeleteUserView(View):
 
 
 class PushNotificationView(View):
-    def post(self, request, *args, **kwar):
+    def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         access_token = request.headers.get('Authorization', None)
         payload = jwt.decode(access_token, SECRET_KEY, algorithm='HS256')
@@ -129,9 +128,16 @@ class PushNotificationView(View):
             device.save()
             return HttpResponse(status=200)
 
-        # device.send_message("You've got mail") # Alert message may only be sent as text.
-        # device.send_message(None, badge=5) # No alerts but with badge.
-        # device.send_message(None, content_available=1, extra={"foo": "bar"}) # Silent message with custom data.
-        # # alert with title and body.
-        # device.send_message(message={"title" : "Game Request", "body" : "Bob wants to play poker"}, extra={"foo": "bar"})
-        # device.send_message("Hello again", thread_id="123", extra={"foo": "bar"})
+
+class BidderRegistrationView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        if Bidders.objects.filter(phone_num=data['phone_num']).exists():
+            return JsonResponse({'message': '이미 등록된 상인입니다.'})
+        else:
+            bidder = Bidders(
+                store_name=data['store_name'],
+                phone_num=data['phone_num']
+            )
+            bidder.save()
+            return HttpResponse(status=200)

@@ -34,3 +34,9 @@ class UserRequestIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = SignUpModel
         fields = ('certification',)
+
+
+class BidderRequstSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RequestModel
+        fields = ('__all__')
