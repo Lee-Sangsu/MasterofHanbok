@@ -117,8 +117,9 @@ class AnsweredRequests(View):
             bidder=bidder).values(request)
         # relative_requests = RequestModel.objects.all().filter(bidding=biddings)
         # relative_requests = biddings.request.all()
-        serialzer = BidderRequstSerializer(biddings, many=True)
-        return HttpResponse(serialzer, status=200)
+        # serialzer = BidderRequstSerializer(biddings, many=True)
+        dumpJSON = json.dumps(list(biddings))
+        return HttpResponse(dumpJSON, status=200)
 
 
 class UnansweredRequests(View):
