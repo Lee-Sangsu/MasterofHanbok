@@ -113,9 +113,11 @@ class DetailBiddings(View):
 class AnsweredRequests(View):
     def get(self, request, pk):
         bidder = Bidders.objects.get(id=pk)
-        biddings = BiddingModel.objects.filter(bidder=bidder)
-        requests = biddings.request.all()
-        serialzer = BidderRequstSerializer(requests, many=True)
+        relative_requests = BiddingModel.objects.filter(
+            bidder=bidder).request.all()
+        # relative_requests = RequestModel.objects.filter()
+        # relative_requests = biddings.request.all()
+        serialzer = BidderRequstSerializer(relative_requests, many=True)
         return HttpResponse(serialzer, status=200)
 
 
