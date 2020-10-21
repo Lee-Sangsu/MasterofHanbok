@@ -147,7 +147,7 @@ class BidderLoginView(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         bidder = Bidders.objects.get(phone_num=data['phone_num'])
-        if bidder.exists():
+        if Bidders.objects.filter(phone_num=data['phone_num']).exists():
             return HttpResponse(bidder.pk, status=200)
         else:
             return JsonResponse({'message': '등록되지 않은 상인입니다.'})
