@@ -120,15 +120,15 @@ WSGI_APPLICATION = 'MasterHanbok.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# also hide db secret key for security
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hsok_db',
-        'USER': 'leesangsu',
-        'PASSWORD': '0519',
-        'HOST': 'localhost',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
         'PORT': '5432',
     },
 }
