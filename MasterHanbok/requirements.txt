@@ -6,7 +6,7 @@ cryptography==3.2
 Django==3.0.8
 django-phonenumber-field==4.0.0
 django-rest-auth==0.9.5
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 phonenumberslite==8.12.6
 pycparser==2.20
